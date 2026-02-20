@@ -76,6 +76,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+      align-items: center;
     }
 
     .badge {
@@ -85,6 +86,22 @@
       font-size: 0.84rem;
       color: var(--accent);
       background: rgba(83, 225, 240, 0.12);
+    }
+
+    .form-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: rgba(19, 28, 57, 0.92);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.9rem;
+    }
+
+    .form-input:focus {
+      outline: 2px solid rgba(83, 225, 240, 0.4);
+      outline-offset: 1px;
     }
 
     .layout {
@@ -200,6 +217,95 @@
     .mission-list li.done {
       border-color: rgba(65, 210, 109, 0.56);
       background: rgba(34, 73, 44, 0.52);
+    }
+
+    .profile-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(21, 31, 63, 0.84);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .avatar-large {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.7rem;
+      border: 1px solid rgba(83, 225, 240, 0.45);
+      background: rgba(40, 62, 108, 0.85);
+    }
+
+    .skin-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .skin-btn {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(22, 32, 66, 0.9);
+      color: var(--text);
+      cursor: pointer;
+      padding: 8px 6px;
+      font: inherit;
+      text-align: center;
+      font-size: 0.83rem;
+      transition: border-color 0.12s ease, transform 0.12s ease;
+    }
+
+    .skin-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(83, 225, 240, 0.64);
+    }
+
+    .skin-btn span {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 3px;
+    }
+
+    .skin-btn.active {
+      border-color: var(--accent2);
+      box-shadow: 0 0 0 1px rgba(255, 209, 102, 0.45) inset;
+      background: rgba(49, 66, 109, 0.95);
+    }
+
+    .rank-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .rank-list li {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px;
+      background: rgba(21, 31, 63, 0.84);
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .rank-list b {
+      color: var(--accent2);
+    }
+
+    .rank-meta {
+      color: var(--muted);
+      font-size: 0.8rem;
     }
 
     .game-wrap {
@@ -492,6 +598,7 @@
       .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .stage-grid,
       .options { grid-template-columns: 1fr; }
+      .skin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
   </style>
 </head>
@@ -503,6 +610,7 @@
         <p>生命值、连击、Boss、成就和每日任务，边玩边记忆。</p>
       </div>
       <div class="hero-actions">
+        <span class="badge" id="badgePlayer">🐱 同学</span>
         <span class="badge" id="badgeExp">EXP 0</span>
         <span class="badge" id="badgeCoin">金币 0</span>
         <span class="badge" id="badgeUnlock">已解锁 1/15</span>
@@ -515,6 +623,7 @@
         <div class="stage-grid" id="stageGrid"></div>
         <div class="actions">
           <button class="btn main" id="startStageBtn">开始选中关卡</button>
+          <button class="btn warn" id="startRankBtn">开始排位赛</button>
           <button class="btn alt" id="goDrillBtn">进入训练页</button>
           <button class="btn alt" id="resetBtn">重置游戏进度</button>
         </div>
@@ -525,6 +634,20 @@
 
       <div class="panel">
         <h2>任务与状态</h2>
+        <div class="profile-card">
+          <div class="avatar-large" id="pAvatar">🐱</div>
+          <div>
+            <div style="font-size: 0.82rem; color: var(--muted); margin-bottom: 5px;">昵称</div>
+            <input class="form-input" id="pNickname" maxlength="12" placeholder="输入昵称（最多12字）" />
+            <div class="actions" style="margin-top:8px;">
+              <button class="btn alt" id="saveProfileBtn">保存角色</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:0.82rem; color: var(--muted); margin-bottom:6px;">皮肤选择</div>
+        <div class="skin-grid" id="skinGrid"></div>
+
         <div class="row">
           <div class="stat"><span>总分</span><strong id="sTotalScore">0</strong></div>
           <div class="stat"><span>最高连击</span><strong id="sBestCombo">0</strong></div>
@@ -540,6 +663,13 @@
 
         <h2 style="margin-top: 10px;">成就</h2>
         <ul class="achv-list" id="achvList"></ul>
+
+        <h2 style="margin-top: 10px;">排行榜模式</h2>
+        <div class="actions" style="margin-top:0; margin-bottom:8px;">
+          <button class="btn warn" id="rankModeBtn">用当前角色挑战排位</button>
+          <button class="btn alt" id="clearRankBtn">清空排行榜</button>
+        </div>
+        <ul class="rank-list" id="rankList"></ul>
       </div>
     </section>
 
@@ -616,6 +746,16 @@
 
     const STAGE_COUNT = 15;
     const GAME_KEY = "chem_valence_game_v1";
+    const RANK_KEY = "chem_valence_rank_v1";
+
+    const SKINS = [
+      { id: "cat", name: "学霸猫", emoji: "🐱" },
+      { id: "fox", name: "速记狐", emoji: "🦊" },
+      { id: "bear", name: "稳扎熊", emoji: "🐻" },
+      { id: "owl", name: "夜读枭", emoji: "🦉" },
+      { id: "panda", name: "冷静熊猫", emoji: "🐼" },
+      { id: "dragon", name: "元素龙", emoji: "🐲" }
+    ];
 
     const ACHIEVEMENTS = [
       { key: "first_clear", name: "初次通关", desc: "首次完成任意关卡" },
@@ -633,16 +773,25 @@
     ];
 
     const els = {
+      badgePlayer: document.getElementById("badgePlayer"),
       badgeExp: document.getElementById("badgeExp"),
       badgeCoin: document.getElementById("badgeCoin"),
       badgeUnlock: document.getElementById("badgeUnlock"),
       stageGrid: document.getElementById("stageGrid"),
       startStageBtn: document.getElementById("startStageBtn"),
+      startRankBtn: document.getElementById("startRankBtn"),
       goDrillBtn: document.getElementById("goDrillBtn"),
       resetBtn: document.getElementById("resetBtn"),
+      pAvatar: document.getElementById("pAvatar"),
+      pNickname: document.getElementById("pNickname"),
+      saveProfileBtn: document.getElementById("saveProfileBtn"),
+      skinGrid: document.getElementById("skinGrid"),
       missionList: document.getElementById("missionList"),
       enemyList: document.getElementById("enemyList"),
       achvList: document.getElementById("achvList"),
+      rankModeBtn: document.getElementById("rankModeBtn"),
+      clearRankBtn: document.getElementById("clearRankBtn"),
+      rankList: document.getElementById("rankList"),
       sTotalScore: document.getElementById("sTotalScore"),
       sBestCombo: document.getElementById("sBestCombo"),
       sCleared: document.getElementById("sCleared"),
@@ -671,6 +820,7 @@
 
     const app = {
       profile: loadProfile(),
+      rankings: loadRankings(),
       selectedStage: 1,
       session: null,
       question: null,
@@ -697,6 +847,8 @@
       try {
         const parsed = JSON.parse(localStorage.getItem(GAME_KEY) || "{}");
         const base = {
+          nickname: "同学",
+          skinId: "cat",
           unlockedStage: 1,
           bestStars: {},
           cleared: {},
@@ -710,12 +862,18 @@
           daily: createDailyState(todayKey())
         };
         const merged = { ...base, ...parsed };
+        if (!SKINS.some((x) => x.id === merged.skinId)) {
+          merged.skinId = "cat";
+        }
+        merged.nickname = sanitizeNickname(merged.nickname);
         if (!merged.daily || merged.daily.date !== todayKey()) {
           merged.daily = createDailyState(todayKey());
         }
         return merged;
       } catch (err) {
         return {
+          nickname: "同学",
+          skinId: "cat",
           unlockedStage: 1,
           bestStars: {},
           cleared: {},
@@ -731,17 +889,42 @@
       }
     }
 
+    function loadRankings() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(RANK_KEY) || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (err) {
+        return [];
+      }
+    }
+
     function saveProfile() {
       localStorage.setItem(GAME_KEY, JSON.stringify(app.profile));
+    }
+
+    function saveRankings() {
+      localStorage.setItem(RANK_KEY, JSON.stringify(app.rankings));
     }
 
     function stageInfo(stageNo) {
       return {
         stageNo,
+        mode: "stage",
         isBoss: stageNo % 5 === 0,
         targetQuestions: stageNo % 5 === 0 ? 12 : 8,
         timeLimit: stageNo % 5 === 0 ? 55 : 42,
         maxHearts: stageNo % 5 === 0 ? 4 : 3
+      };
+    }
+
+    function rankInfo() {
+      return {
+        stageNo: "排位赛",
+        mode: "rank",
+        isBoss: false,
+        targetQuestions: 20,
+        timeLimit: 90,
+        maxHearts: 3
       };
     }
 
@@ -753,11 +936,24 @@
       return app.profile.bestStars[String(stageNo)] || 0;
     }
 
+    function sanitizeNickname(raw) {
+      const text = String(raw || "").trim().replace(/\s+/g, " ");
+      return text ? text.slice(0, 12) : "同学";
+    }
+
+    function currentSkin() {
+      return SKINS.find((x) => x.id === app.profile.skinId) || SKINS[0];
+    }
+
     function updateTopBadges() {
       const unlocked = Math.min(app.profile.unlockedStage, STAGE_COUNT);
+      const skin = currentSkin();
+      els.badgePlayer.textContent = `${skin.emoji} ${app.profile.nickname}`;
       els.badgeExp.textContent = `EXP ${app.profile.totalExp}`;
       els.badgeCoin.textContent = `金币 ${app.profile.coins}`;
       els.badgeUnlock.textContent = `已解锁 ${unlocked}/${STAGE_COUNT}`;
+      els.pAvatar.textContent = skin.emoji;
+      els.pNickname.value = app.profile.nickname;
     }
 
     function renderMap() {
@@ -791,6 +987,84 @@
       els.sCleared.textContent = String(clearedCount);
       els.sBossWin.textContent = String(app.profile.bossWins);
       updateTopBadges();
+    }
+
+    function renderSkins() {
+      els.skinGrid.innerHTML = "";
+      SKINS.forEach((skin) => {
+        const btn = document.createElement("button");
+        btn.className = "skin-btn";
+        if (skin.id === app.profile.skinId) btn.classList.add("active");
+        btn.innerHTML = `<span>${skin.emoji}</span>${skin.name}`;
+        btn.addEventListener("click", () => {
+          app.profile.skinId = skin.id;
+          updateTopBadges();
+          renderSkins();
+          saveProfile();
+        });
+        els.skinGrid.appendChild(btn);
+      });
+    }
+
+    function saveProfileInfo() {
+      app.profile.nickname = sanitizeNickname(els.pNickname.value);
+      updateTopBadges();
+      saveProfile();
+      els.feedback.className = "feedback ok";
+      els.feedback.textContent = "角色信息已保存。";
+    }
+
+    function formatRankTime(ts) {
+      const d = new Date(ts);
+      if (Number.isNaN(d.getTime())) return "-";
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const h = String(d.getHours()).padStart(2, "0");
+      const mi = String(d.getMinutes()).padStart(2, "0");
+      return `${m}-${day} ${h}:${mi}`;
+    }
+
+    function appendRanking(entry) {
+      app.rankings.push(entry);
+      app.rankings.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if (b.accuracy !== a.accuracy) return b.accuracy - a.accuracy;
+        if (b.maxCombo !== a.maxCombo) return b.maxCombo - a.maxCombo;
+        return a.ts - b.ts;
+      });
+      app.rankings = app.rankings.slice(0, 30);
+      saveRankings();
+      const idx = app.rankings.findIndex((x) => x.ts === entry.ts && x.nickname === entry.nickname && x.score === entry.score);
+      return idx >= 0 ? idx + 1 : null;
+    }
+
+    function renderRankings() {
+      els.rankList.innerHTML = "";
+      if (!app.rankings.length) {
+        const li = document.createElement("li");
+        li.textContent = "暂无记录，先打一局排位。";
+        els.rankList.appendChild(li);
+        return;
+      }
+
+      app.rankings.slice(0, 10).forEach((r, i) => {
+        const li = document.createElement("li");
+        const left = document.createElement("div");
+        const right = document.createElement("div");
+        const skin = SKINS.find((x) => x.id === r.skinId) || SKINS[0];
+        left.innerHTML = `<b>#${i + 1}</b> ${skin.emoji} ${r.nickname}<div class=\"rank-meta\">${formatRankTime(r.ts)} · 正确率 ${r.accuracy}% · 连击 ${r.maxCombo}</div>`;
+        right.innerHTML = `<b>${r.score}</b> 分`;
+        li.appendChild(left);
+        li.appendChild(right);
+        els.rankList.appendChild(li);
+      });
+    }
+
+    function clearRankings() {
+      if (!confirm("确认清空本地排行榜吗？")) return;
+      app.rankings = [];
+      saveRankings();
+      renderRankings();
     }
 
     function dailyProgress(key) {
@@ -883,9 +1157,11 @@
     function refreshDashboard() {
       renderMap();
       renderStats();
+      renderSkins();
       renderMissions();
       renderMonsters();
       renderAchievements();
+      renderRankings();
       saveProfile();
     }
 
@@ -922,7 +1198,11 @@
       return weighted[weighted.length - 1].item;
     }
 
-    function pickType(isBoss) {
+    function pickType(isBoss, mode) {
+      if (mode === "rank") {
+        const rankPool = ["name_to_valence", "symbol_to_valence", "name_to_symbol", "symbol_to_name", "name_to_valence"];
+        return rand(rankPool);
+      }
       const bossPool = ["name_to_valence", "symbol_to_valence", "name_to_valence", "symbol_to_valence", "name_to_symbol"];
       const normalPool = ["name_to_symbol", "symbol_to_name", "name_to_valence", "symbol_to_valence"];
       return rand(isBoss ? bossPool : normalPool);
@@ -930,7 +1210,7 @@
 
     function buildQuestion(session) {
       const item = weightedItem();
-      const type = pickType(session.info.isBoss);
+      const type = pickType(session.info.isBoss, session.info.mode);
       let correct = "";
       let prompt = "";
       let meta = "";
@@ -1002,7 +1282,9 @@
     function renderGameHead() {
       if (!app.session) return;
       const s = app.session;
-      els.gStage.textContent = `${s.info.isBoss ? "Boss" : "关卡"} ${s.info.stageNo}`;
+      els.gStage.textContent = s.info.mode === "rank"
+        ? "排位赛"
+        : `${s.info.isBoss ? "Boss" : "关卡"} ${s.info.stageNo}`;
       els.gHearts.textContent = heartsText(s.hearts);
       els.gCombo.textContent = String(s.combo);
       els.gScore.textContent = String(s.score);
@@ -1081,8 +1363,8 @@
       }
     }
 
-    function startBattle(stageNo) {
-      const info = stageInfo(stageNo);
+    function startBattle(stageNo, mode = "stage") {
+      const info = mode === "rank" ? rankInfo() : stageInfo(stageNo);
       app.session = {
         info,
         remaining: info.timeLimit,
@@ -1102,7 +1384,11 @@
       renderQuestion();
       renderGameHead();
       els.feedback.className = "feedback";
-      els.feedback.textContent = info.isBoss ? "Boss 关开启，化合价题占比更高。" : "关卡开始，保持连击。";
+      if (info.mode === "rank") {
+        els.feedback.textContent = "排位赛开启：20题限时90秒，按得分进入本地排行榜。";
+      } else {
+        els.feedback.textContent = info.isBoss ? "Boss 关开启，化合价题占比更高。" : "关卡开始，保持连击。";
+      }
     }
 
     function starsForSession(s, cleared) {
@@ -1120,15 +1406,19 @@
 
       const accuracy = s.answered ? Math.round((s.correct / s.answered) * 100) : 0;
       const stars = starsForSession(s, cleared);
-      const coinGain = cleared ? stars * 18 + Math.floor(s.maxCombo * 3) : 6;
-      const expGain = cleared ? s.correct * 11 + (s.info.isBoss ? 45 : 20) : s.correct * 5;
+      const coinGain = cleared
+        ? stars * 18 + Math.floor(s.maxCombo * 3) + (s.info.mode === "rank" ? 10 : 0)
+        : 6;
+      const expGain = cleared
+        ? s.correct * 11 + (s.info.mode === "rank" ? 35 : (s.info.isBoss ? 45 : 20))
+        : s.correct * 5;
 
       app.profile.totalScore += s.score;
       app.profile.totalExp += expGain;
       app.profile.coins += coinGain;
       app.profile.bestCombo = Math.max(app.profile.bestCombo, s.maxCombo);
 
-      if (cleared) {
+      if (cleared && s.info.mode === "stage") {
         app.profile.cleared[String(s.info.stageNo)] = true;
         const oldStars = bestStars(s.info.stageNo);
         if (stars > oldStars) app.profile.bestStars[String(s.info.stageNo)] = stars;
@@ -1140,24 +1430,42 @@
         }
       }
 
-      if (cleared) setAchievement("first_clear");
+      if (cleared && s.info.mode === "stage") setAchievement("first_clear");
       if (s.maxCombo >= 8) setAchievement("combo_8");
-      if (cleared && s.wrong === 0 && s.hearts === s.info.maxHearts) setAchievement("perfect_stage");
-      if (cleared && s.info.isBoss) setAchievement("boss_slayer");
-      if (cleared && s.info.stageNo >= 10) setAchievement("stage10_clear");
+      if (cleared && s.info.mode === "stage" && s.wrong === 0 && s.hearts === s.info.maxHearts) setAchievement("perfect_stage");
+      if (cleared && s.info.mode === "stage" && s.info.isBoss) setAchievement("boss_slayer");
+      if (cleared && s.info.mode === "stage" && s.info.stageNo >= 10) setAchievement("stage10_clear");
       const clearedAll = Array.from({ length: STAGE_COUNT }, (_, i) => i + 1).every((x) => !!app.profile.cleared[String(x)]);
       if (clearedAll) setAchievement("map_master");
+
+      let rankSuffix = "";
+      if (s.info.mode === "rank" && cleared) {
+        const rankPos = appendRanking({
+          nickname: app.profile.nickname,
+          skinId: app.profile.skinId,
+          score: s.score,
+          accuracy,
+          maxCombo: s.maxCombo,
+          correct: s.correct,
+          ts: Date.now()
+        });
+        rankSuffix = rankPos ? ` 本次排位第 ${rankPos} 名。` : "";
+      }
 
       grantDailyRewardsIfReady();
       refreshDashboard();
 
-      els.rTitle.textContent = cleared ? "通关成功" : "挑战失败";
-      els.rDesc.textContent = `${reason}。${cleared ? "继续推进关卡。" : "可重试当前关。"}`;
+      els.rTitle.textContent = s.info.mode === "rank"
+        ? (cleared ? "排位完成" : "排位失败")
+        : (cleared ? "通关成功" : "挑战失败");
+      els.rDesc.textContent = s.info.mode === "rank"
+        ? `${reason}。${cleared ? "已写入排行榜。" : "可立即重开排位。"}${rankSuffix}`
+        : `${reason}。${cleared ? "继续推进关卡。" : "可重试当前关。"}`;
       els.rStars.textContent = `${"★".repeat(stars)}${"☆".repeat(3 - stars)}`;
       els.rAccuracy.textContent = `${accuracy}%`;
       els.rCoins.textContent = `+${coinGain}`;
       els.rExp.textContent = `+${expGain}`;
-      els.rNextBtn.disabled = !cleared || s.info.stageNo >= STAGE_COUNT;
+      els.rNextBtn.disabled = s.info.mode === "rank" || !cleared || s.info.stageNo >= STAGE_COUNT;
       els.resultMask.style.display = "flex";
     }
 
@@ -1182,6 +1490,7 @@
     function resetAll() {
       if (!confirm("确认重置所有游戏进度吗？")) return;
       localStorage.removeItem(GAME_KEY);
+      localStorage.removeItem(RANK_KEY);
       location.reload();
     }
 
@@ -1191,7 +1500,12 @@
         return;
       }
       closeResult();
-      startBattle(app.selectedStage);
+      startBattle(app.selectedStage, "stage");
+    });
+
+    els.startRankBtn.addEventListener("click", () => {
+      closeResult();
+      startBattle(app.selectedStage, "rank");
     });
 
     els.goDrillBtn.addEventListener("click", () => {
@@ -1199,11 +1513,25 @@
     });
 
     els.resetBtn.addEventListener("click", resetAll);
+    els.saveProfileBtn.addEventListener("click", saveProfileInfo);
+    els.pNickname.addEventListener("keydown", (evt) => {
+      if (evt.key === "Enter") saveProfileInfo();
+    });
+
+    els.rankModeBtn.addEventListener("click", () => {
+      closeResult();
+      startBattle(app.selectedStage, "rank");
+    });
+
+    els.clearRankBtn.addEventListener("click", clearRankings);
 
     els.rReplayBtn.addEventListener("click", () => {
-      const stageNo = app.session ? app.session.info.stageNo : app.selectedStage;
+      const mode = app.session ? app.session.info.mode : "stage";
+      const stageNo = app.session && app.session.info.mode === "stage"
+        ? app.session.info.stageNo
+        : app.selectedStage;
       els.resultMask.style.display = "none";
-      startBattle(stageNo);
+      startBattle(stageNo, mode);
     });
 
     els.rNextBtn.addEventListener("click", () => {
@@ -1212,7 +1540,7 @@
       app.selectedStage = next;
       els.resultMask.style.display = "none";
       renderMap();
-      startBattle(next);
+      startBattle(next, "stage");
     });
 
     els.rCloseBtn.addEventListener("click", () => {
