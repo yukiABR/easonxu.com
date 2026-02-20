@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>化合价闯关场</title>
+  <style>
+    :root {
+      --bg-deep: #101325;
+      --bg-mid: #1d2545;
+      --bg-soft: #23315c;
+      --text: #e9efff;
+      --muted: #a8b3da;
+      --line: #3b4b86;
+      --card: rgba(22, 30, 58, 0.86);
+      --accent: #53e1f0;
+      --accent2: #ffd166;
+      --ok: #41d26d;
+      --bad: #ff6b7a;
+      --heart: #ff5b8a;
+      --shadow: 0 14px 34px rgba(7, 11, 28, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "STKaiti", "Kaiti SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(83, 225, 240, 0.14), transparent 30%),
+        radial-gradient(circle at 88% 8%, rgba(255, 107, 122, 0.16), transparent 24%),
+        linear-gradient(140deg, var(--bg-deep), var(--bg-mid) 55%, var(--bg-soft));
+      padding: 18px;
+    }
+
+    .app {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero,
+    .panel {
+      border: 1px solid rgba(93, 117, 196, 0.45);
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+    }
+
+    .hero {
+      padding: 16px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.25rem, 2.2vw, 1.9rem);
+      letter-spacing: 0.06em;
+    }
+
+    .hero p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge {
+      border: 1px solid rgba(83, 225, 240, 0.45);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.84rem;
+      color: var(--accent);
+      background: rgba(83, 225, 240, 0.12);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 14px;
+    }
+
+    .panel {
+      padding: 14px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.06rem;
+      letter-spacing: 0.03em;
+    }
+
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stage {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(26, 35, 66, 0.92);
+      color: var(--text);
+      padding: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .stage:hover {
+      transform: translateY(-1px);
+      border-color: rgba(83, 225, 240, 0.62);
+      box-shadow: 0 8px 18px rgba(9, 15, 39, 0.42);
+    }
+
+    .stage.selected {
+      border-color: var(--accent2);
+      box-shadow: 0 0 0 1px rgba(255, 209, 102, 0.54) inset;
+    }
+
+    .stage.locked {
+      opacity: 0.45;
+      cursor: not-allowed;
+      filter: grayscale(0.35);
+    }
+
+    .stage small {
+      color: var(--muted);
+      display: block;
+      margin-top: 4px;
+      font-size: 0.78rem;
+    }
+
+    .stage .stars {
+      margin-top: 5px;
+      color: #ffd166;
+      letter-spacing: 0.08em;
+      font-size: 0.82rem;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px;
+      background: rgba(27, 39, 76, 0.84);
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 1rem;
+    }
+
+    .mission-list,
+    .enemy-list,
+    .achv-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .mission-list li,
+    .enemy-list li,
+    .achv-list li {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px;
+      background: rgba(21, 31, 63, 0.84);
+      font-size: 0.87rem;
+    }
+
+    .mission-list li.done {
+      border-color: rgba(65, 210, 109, 0.56);
+      background: rgba(34, 73, 44, 0.52);
+    }
+
+    .game-wrap {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(18, 26, 51, 0.88);
+      padding: 12px;
+      position: relative;
+      overflow: hidden;
+      min-height: 380px;
+    }
+
+    .game-wrap::before {
+      content: "";
+      position: absolute;
+      inset: -60px;
+      background:
+        radial-gradient(circle, rgba(83, 225, 240, 0.08), transparent 70%),
+        radial-gradient(circle at 80% 20%, rgba(255, 209, 102, 0.14), transparent 35%);
+      pointer-events: none;
+    }
+
+    .game-head {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px;
+      background: rgba(31, 43, 80, 0.84);
+      font-size: 0.84rem;
+    }
+
+    .pill strong { font-size: 0.98rem; }
+
+    .hearts {
+      letter-spacing: 0.08em;
+      color: var(--heart);
+      font-size: 1.05rem;
+    }
+
+    .timer-bar {
+      position: relative;
+      z-index: 1;
+      height: 8px;
+      background: rgba(96, 116, 187, 0.38);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .timer-bar > i {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #53e1f0, #ffd166);
+      transition: width 0.3s linear;
+    }
+
+    .question-card {
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(83, 225, 240, 0.46);
+      background: rgba(27, 43, 82, 0.87);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .question-card small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+    }
+
+    .question-card strong {
+      font-size: clamp(1.03rem, 2vw, 1.3rem);
+      line-height: 1.45;
+      letter-spacing: 0.02em;
+    }
+
+    .question-card.pop {
+      animation: card-pop 520ms ease;
+    }
+
+    .question-card.pop::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle, rgba(65, 210, 109, 0.36) 0%, rgba(65, 210, 109, 0) 62%),
+        conic-gradient(from 20deg, rgba(83, 225, 240, 0.2), rgba(255, 209, 102, 0), rgba(83, 225, 240, 0.2));
+      animation: burst 520ms ease;
+      pointer-events: none;
+    }
+
+    .options {
+      position: relative;
+      z-index: 1;
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .opt {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(25, 37, 73, 0.95);
+      color: var(--text);
+      padding: 10px;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.93rem;
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+
+    .opt:hover {
+      transform: translateY(-1px);
+      border-color: rgba(83, 225, 240, 0.72);
+      background: rgba(32, 48, 92, 0.95);
+    }
+
+    .opt:disabled {
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+
+    .opt.correct {
+      border-color: rgba(65, 210, 109, 0.85);
+      background: rgba(31, 86, 51, 0.78);
+    }
+
+    .opt.bad {
+      border-color: rgba(255, 107, 122, 0.9);
+      background: rgba(105, 32, 47, 0.78);
+    }
+
+    .feedback {
+      position: relative;
+      z-index: 1;
+      min-height: 24px;
+      margin-top: 10px;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .feedback.ok {
+      color: var(--ok);
+      animation: float-in 0.36s ease;
+    }
+
+    .feedback.bad {
+      color: var(--bad);
+      animation: float-in 0.36s ease;
+    }
+
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(9, 15, 36, 0.5);
+    }
+
+    .btn.main {
+      background: linear-gradient(120deg, #53e1f0, #30c6de);
+      color: #0e1937;
+      font-weight: 700;
+    }
+
+    .btn.alt {
+      background: rgba(26, 37, 72, 0.94);
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    .btn.warn {
+      background: linear-gradient(120deg, #ffd166, #ffbc42);
+      color: #342407;
+      font-weight: 700;
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .result-mask {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(4, 9, 24, 0.62);
+      backdrop-filter: blur(4px);
+      z-index: 20;
+      padding: 16px;
+    }
+
+    .result-card {
+      width: min(520px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(17, 25, 52, 0.98);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .result-card h3 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .result-card p {
+      margin: 8px 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 8px 0;
+    }
+
+    .result-grid div {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: rgba(27, 38, 77, 0.88);
+      padding: 7px;
+      font-size: 0.8rem;
+    }
+
+    .result-grid strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.95rem;
+    }
+
+    @keyframes card-pop {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes burst {
+      0% { opacity: 0; transform: scale(0.35); }
+      30% { opacity: 0.76; }
+      100% { opacity: 0; transform: scale(1.1); }
+    }
+
+    @keyframes float-in {
+      0% { opacity: 0; transform: translateY(5px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .stage-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 660px) {
+      body { padding: 12px; }
+      .row,
+      .game-head,
+      .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stage-grid,
+      .options { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div>
+        <h1>化合价闯关场</h1>
+        <p>生命值、连击、Boss、成就和每日任务，边玩边记忆。</p>
+      </div>
+      <div class="hero-actions">
+        <span class="badge" id="badgeExp">EXP 0</span>
+        <span class="badge" id="badgeCoin">金币 0</span>
+        <span class="badge" id="badgeUnlock">已解锁 1/15</span>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <h2>关卡地图</h2>
+        <div class="stage-grid" id="stageGrid"></div>
+        <div class="actions">
+          <button class="btn main" id="startStageBtn">开始选中关卡</button>
+          <button class="btn alt" id="goDrillBtn">进入训练页</button>
+          <button class="btn alt" id="resetBtn">重置游戏进度</button>
+        </div>
+        <p style="color: var(--muted); margin: 10px 0 0; font-size: 0.84rem;">
+          规则：普通关 8 题，Boss 关 12 题；每 5 关为 Boss。三星条件：全程无错并保留满生命。
+        </p>
+      </div>
+
+      <div class="panel">
+        <h2>任务与状态</h2>
+        <div class="row">
+          <div class="stat"><span>总分</span><strong id="sTotalScore">0</strong></div>
+          <div class="stat"><span>最高连击</span><strong id="sBestCombo">0</strong></div>
+          <div class="stat"><span>通关数</span><strong id="sCleared">0</strong></div>
+          <div class="stat"><span>Boss 胜利</span><strong id="sBossWin">0</strong></div>
+        </div>
+
+        <h2 style="margin-top: 2px;">每日任务</h2>
+        <ul class="mission-list" id="missionList"></ul>
+
+        <h2 style="margin-top: 10px;">错题怪</h2>
+        <ul class="enemy-list" id="enemyList"></ul>
+
+        <h2 style="margin-top: 10px;">成就</h2>
+        <ul class="achv-list" id="achvList"></ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>战斗区</h2>
+      <div class="game-wrap" id="gameWrap">
+        <div class="game-head">
+          <div class="pill">关卡<br><strong id="gStage">未开始</strong></div>
+          <div class="pill">生命<br><strong class="hearts" id="gHearts">♥♥♥</strong></div>
+          <div class="pill">连击<br><strong id="gCombo">0</strong></div>
+          <div class="pill">得分<br><strong id="gScore">0</strong></div>
+        </div>
+
+        <div class="timer-bar"><i id="gTimerBar"></i></div>
+
+        <div class="question-card" id="questionCard">
+          <small id="qMeta">选择关卡后开始</small>
+          <strong id="qText">点击上方地图中的关卡，然后点“开始选中关卡”。</strong>
+        </div>
+
+        <div class="options" id="options"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+    </section>
+  </main>
+
+  <section class="result-mask" id="resultMask">
+    <div class="result-card">
+      <h3 id="rTitle">结果</h3>
+      <p id="rDesc"></p>
+      <div class="result-grid">
+        <div>星级<strong id="rStars">0</strong></div>
+        <div>正确率<strong id="rAccuracy">0%</strong></div>
+        <div>金币<strong id="rCoins">0</strong></div>
+        <div>EXP<strong id="rExp">0</strong></div>
+      </div>
+      <div class="actions">
+        <button class="btn main" id="rReplayBtn">再挑战</button>
+        <button class="btn warn" id="rNextBtn">下一关</button>
+        <button class="btn alt" id="rCloseBtn">返回地图</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const BANK = [
+      { id: "E01", name: "钾", symbol: "K", symbolAnswer: "K", valences: ["+1"], category: "element" },
+      { id: "E02", name: "钠", symbol: "Na", symbolAnswer: "Na", valences: ["+1"], category: "element" },
+      { id: "E03", name: "银", symbol: "Ag", symbolAnswer: "Ag", valences: ["+1"], category: "element" },
+      { id: "E04", name: "钙", symbol: "Ca", symbolAnswer: "Ca", valences: ["+2"], category: "element" },
+      { id: "E05", name: "镁", symbol: "Mg", symbolAnswer: "Mg", valences: ["+2"], category: "element" },
+      { id: "E06", name: "钡", symbol: "Ba", symbolAnswer: "Ba", valences: ["+2"], category: "element" },
+      { id: "E07", name: "铜", symbol: "Cu", symbolAnswer: "Cu", valences: ["+1", "+2"], category: "element" },
+      { id: "E08", name: "铁", symbol: "Fe", symbolAnswer: "Fe", valences: ["+2", "+3"], category: "element" },
+      { id: "E09", name: "铝", symbol: "Al", symbolAnswer: "Al", valences: ["+3"], category: "element" },
+      { id: "E10", name: "锰", symbol: "Mn", symbolAnswer: "Mn", valences: ["+2", "+4", "+6", "+7"], category: "element" },
+      { id: "E11", name: "锌", symbol: "Zn", symbolAnswer: "Zn", valences: ["+2"], category: "element" },
+      { id: "E12", name: "氢", symbol: "H", symbolAnswer: "H", valences: ["+1"], category: "element" },
+      { id: "E13", name: "氟", symbol: "F", symbolAnswer: "F", valences: ["-1"], category: "element" },
+      { id: "E14", name: "氯", symbol: "Cl", symbolAnswer: "Cl", valences: ["-1", "+1", "+5", "+7"], category: "element" },
+      { id: "E15", name: "溴", symbol: "Br", symbolAnswer: "Br", valences: ["-1"], category: "element" },
+      { id: "E16", name: "氧", symbol: "O", symbolAnswer: "O", valences: ["-2"], category: "element" },
+      { id: "E17", name: "硫", symbol: "S", symbolAnswer: "S", valences: ["-2", "+4", "+6"], category: "element" },
+      { id: "E18", name: "碳", symbol: "C", symbolAnswer: "C", valences: ["+2", "+4"], category: "element" },
+      { id: "E19", name: "硅", symbol: "Si", symbolAnswer: "Si", valences: ["+4"], category: "element" },
+      { id: "E20", name: "氮", symbol: "N", symbolAnswer: "N", valences: ["-3", "+2", "+3", "+4", "+5"], category: "element" },
+      { id: "E21", name: "磷", symbol: "P", symbolAnswer: "P", valences: ["-3", "+3", "+5"], category: "element" },
+      { id: "R01", name: "氢氧根", symbol: "OH⁻", symbolAnswer: "OH", valences: ["-1"], category: "radical" },
+      { id: "R02", name: "硝酸根", symbol: "NO₃⁻", symbolAnswer: "NO3", valences: ["-1"], category: "radical" },
+      { id: "R03", name: "硫酸根", symbol: "SO₄²⁻", symbolAnswer: "SO4", valences: ["-2"], category: "radical" },
+      { id: "R04", name: "碳酸根", symbol: "CO₃²⁻", symbolAnswer: "CO3", valences: ["-2"], category: "radical" },
+      { id: "R05", name: "铵根", symbol: "NH₄⁺", symbolAnswer: "NH4", valences: ["+1"], category: "radical" }
+    ];
+
+    const STAGE_COUNT = 15;
+    const GAME_KEY = "chem_valence_game_v1";
+
+    const ACHIEVEMENTS = [
+      { key: "first_clear", name: "初次通关", desc: "首次完成任意关卡" },
+      { key: "combo_8", name: "连击大师", desc: "单局连击达到 8" },
+      { key: "perfect_stage", name: "无伤通关", desc: "满生命并全对通关任意关卡" },
+      { key: "boss_slayer", name: "Boss 克星", desc: "完成任意 Boss 关" },
+      { key: "stage10_clear", name: "深入战区", desc: "通关第 10 关或更高" },
+      { key: "map_master", name: "地图征服者", desc: "通关全部 15 关" }
+    ];
+
+    const DAILY_TEMPLATES = [
+      { key: "stage", text: "完成 2 个关卡", target: 2, reward: 50 },
+      { key: "correct", text: "累计答对 20 题", target: 20, reward: 60 },
+      { key: "boss", text: "击败 1 个 Boss", target: 1, reward: 80 }
+    ];
+
+    const els = {
+      badgeExp: document.getElementById("badgeExp"),
+      badgeCoin: document.getElementById("badgeCoin"),
+      badgeUnlock: document.getElementById("badgeUnlock"),
+      stageGrid: document.getElementById("stageGrid"),
+      startStageBtn: document.getElementById("startStageBtn"),
+      goDrillBtn: document.getElementById("goDrillBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      missionList: document.getElementById("missionList"),
+      enemyList: document.getElementById("enemyList"),
+      achvList: document.getElementById("achvList"),
+      sTotalScore: document.getElementById("sTotalScore"),
+      sBestCombo: document.getElementById("sBestCombo"),
+      sCleared: document.getElementById("sCleared"),
+      sBossWin: document.getElementById("sBossWin"),
+      gStage: document.getElementById("gStage"),
+      gHearts: document.getElementById("gHearts"),
+      gCombo: document.getElementById("gCombo"),
+      gScore: document.getElementById("gScore"),
+      gTimerBar: document.getElementById("gTimerBar"),
+      qMeta: document.getElementById("qMeta"),
+      qText: document.getElementById("qText"),
+      questionCard: document.getElementById("questionCard"),
+      options: document.getElementById("options"),
+      feedback: document.getElementById("feedback"),
+      resultMask: document.getElementById("resultMask"),
+      rTitle: document.getElementById("rTitle"),
+      rDesc: document.getElementById("rDesc"),
+      rStars: document.getElementById("rStars"),
+      rAccuracy: document.getElementById("rAccuracy"),
+      rCoins: document.getElementById("rCoins"),
+      rExp: document.getElementById("rExp"),
+      rReplayBtn: document.getElementById("rReplayBtn"),
+      rNextBtn: document.getElementById("rNextBtn"),
+      rCloseBtn: document.getElementById("rCloseBtn")
+    };
+
+    const app = {
+      profile: loadProfile(),
+      selectedStage: 1,
+      session: null,
+      question: null,
+      timerId: null,
+      nextTimeoutId: null
+    };
+
+    function todayKey() {
+      const d = new Date();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${d.getFullYear()}-${m}-${day}`;
+    }
+
+    function createDailyState(date) {
+      const items = {};
+      DAILY_TEMPLATES.forEach((x) => {
+        items[x.key] = { value: 0, claimed: false };
+      });
+      return { date, items };
+    }
+
+    function loadProfile() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(GAME_KEY) || "{}");
+        const base = {
+          unlockedStage: 1,
+          bestStars: {},
+          cleared: {},
+          totalScore: 0,
+          totalExp: 0,
+          coins: 0,
+          bestCombo: 0,
+          bossWins: 0,
+          monsters: {},
+          achievements: {},
+          daily: createDailyState(todayKey())
+        };
+        const merged = { ...base, ...parsed };
+        if (!merged.daily || merged.daily.date !== todayKey()) {
+          merged.daily = createDailyState(todayKey());
+        }
+        return merged;
+      } catch (err) {
+        return {
+          unlockedStage: 1,
+          bestStars: {},
+          cleared: {},
+          totalScore: 0,
+          totalExp: 0,
+          coins: 0,
+          bestCombo: 0,
+          bossWins: 0,
+          monsters: {},
+          achievements: {},
+          daily: createDailyState(todayKey())
+        };
+      }
+    }
+
+    function saveProfile() {
+      localStorage.setItem(GAME_KEY, JSON.stringify(app.profile));
+    }
+
+    function stageInfo(stageNo) {
+      return {
+        stageNo,
+        isBoss: stageNo % 5 === 0,
+        targetQuestions: stageNo % 5 === 0 ? 12 : 8,
+        timeLimit: stageNo % 5 === 0 ? 55 : 42,
+        maxHearts: stageNo % 5 === 0 ? 4 : 3
+      };
+    }
+
+    function canPlay(stageNo) {
+      return stageNo <= app.profile.unlockedStage;
+    }
+
+    function bestStars(stageNo) {
+      return app.profile.bestStars[String(stageNo)] || 0;
+    }
+
+    function updateTopBadges() {
+      const unlocked = Math.min(app.profile.unlockedStage, STAGE_COUNT);
+      els.badgeExp.textContent = `EXP ${app.profile.totalExp}`;
+      els.badgeCoin.textContent = `金币 ${app.profile.coins}`;
+      els.badgeUnlock.textContent = `已解锁 ${unlocked}/${STAGE_COUNT}`;
+    }
+
+    function renderMap() {
+      els.stageGrid.innerHTML = "";
+      for (let i = 1; i <= STAGE_COUNT; i += 1) {
+        const info = stageInfo(i);
+        const btn = document.createElement("button");
+        btn.className = "stage";
+        if (!canPlay(i)) btn.classList.add("locked");
+        if (app.selectedStage === i) btn.classList.add("selected");
+
+        const stars = "★".repeat(bestStars(i)) + "☆".repeat(3 - bestStars(i));
+        btn.innerHTML = `
+          <strong>${info.isBoss ? "Boss" : "关卡"} ${i}</strong>
+          <small>${info.targetQuestions}题 / ${info.timeLimit}s / ${info.maxHearts}♥</small>
+          <div class="stars">${stars}</div>
+        `;
+        btn.disabled = !canPlay(i);
+        btn.addEventListener("click", () => {
+          app.selectedStage = i;
+          renderMap();
+        });
+        els.stageGrid.appendChild(btn);
+      }
+    }
+
+    function renderStats() {
+      const clearedCount = Object.values(app.profile.cleared).filter(Boolean).length;
+      els.sTotalScore.textContent = String(app.profile.totalScore);
+      els.sBestCombo.textContent = String(app.profile.bestCombo);
+      els.sCleared.textContent = String(clearedCount);
+      els.sBossWin.textContent = String(app.profile.bossWins);
+      updateTopBadges();
+    }
+
+    function dailyProgress(key) {
+      return app.profile.daily.items[key] || { value: 0, claimed: false };
+    }
+
+    function applyDailyProgress(key, delta) {
+      if (!app.profile.daily.items[key]) return;
+      const target = DAILY_TEMPLATES.find((x) => x.key === key).target;
+      const it = app.profile.daily.items[key];
+      it.value = Math.min(target, it.value + delta);
+    }
+
+    function grantDailyRewardsIfReady() {
+      DAILY_TEMPLATES.forEach((mission) => {
+        const it = dailyProgress(mission.key);
+        if (!it.claimed && it.value >= mission.target) {
+          it.claimed = true;
+          app.profile.coins += mission.reward;
+          els.feedback.className = "feedback ok";
+          els.feedback.textContent = `每日任务完成：${mission.text}，奖励 +${mission.reward} 金币`;
+        }
+      });
+    }
+
+    function renderMissions() {
+      els.missionList.innerHTML = "";
+      DAILY_TEMPLATES.forEach((mission) => {
+        const progress = dailyProgress(mission.key);
+        const li = document.createElement("li");
+        if (progress.value >= mission.target) li.classList.add("done");
+        li.textContent = `${mission.text}（${progress.value}/${mission.target}）${progress.claimed ? " · 已领奖" : ` · 奖励 ${mission.reward} 金币`}`;
+        els.missionList.appendChild(li);
+      });
+    }
+
+    function updateMonster(id, delta) {
+      const key = String(id);
+      const current = app.profile.monsters[key] || 0;
+      const next = Math.max(0, current + delta);
+      if (next === 0) {
+        delete app.profile.monsters[key];
+      } else {
+        app.profile.monsters[key] = next;
+      }
+    }
+
+    function renderMonsters() {
+      const entries = Object.entries(app.profile.monsters)
+        .map(([id, lv]) => {
+          const item = BANK.find((x) => x.id === id);
+          return { id, lv, label: item ? `${item.name}(${item.symbol})` : id };
+        })
+        .sort((a, b) => b.lv - a.lv)
+        .slice(0, 5);
+
+      els.enemyList.innerHTML = "";
+      if (!entries.length) {
+        const li = document.createElement("li");
+        li.textContent = "暂无错题怪，继续保持。";
+        els.enemyList.appendChild(li);
+        return;
+      }
+
+      entries.forEach((e) => {
+        const li = document.createElement("li");
+        li.textContent = `Lv.${e.lv} ${e.label}`;
+        els.enemyList.appendChild(li);
+      });
+    }
+
+    function setAchievement(key) {
+      if (app.profile.achievements[key]) return;
+      app.profile.achievements[key] = true;
+      els.feedback.className = "feedback ok";
+      const ach = ACHIEVEMENTS.find((x) => x.key === key);
+      els.feedback.textContent = `解锁成就：${ach ? ach.name : key}`;
+    }
+
+    function renderAchievements() {
+      els.achvList.innerHTML = "";
+      ACHIEVEMENTS.forEach((a) => {
+        const li = document.createElement("li");
+        const unlocked = !!app.profile.achievements[a.key];
+        li.textContent = `${unlocked ? "🏅" : "🔒"} ${a.name} - ${a.desc}`;
+        els.achvList.appendChild(li);
+      });
+    }
+
+    function refreshDashboard() {
+      renderMap();
+      renderStats();
+      renderMissions();
+      renderMonsters();
+      renderAchievements();
+      saveProfile();
+    }
+
+    function formatValences(arr) {
+      const uniq = Array.from(new Set(arr));
+      uniq.sort((a, b) => Number(a) - Number(b));
+      return uniq.join(" , ");
+    }
+
+    function rand(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function shuffle(arr) {
+      const out = arr.slice();
+      for (let i = out.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [out[i], out[j]] = [out[j], out[i]];
+      }
+      return out;
+    }
+
+    function weightedItem() {
+      const weighted = BANK.map((item) => {
+        const lv = app.profile.monsters[item.id] || 0;
+        return { item, w: 1 + lv * 0.72 };
+      });
+      const total = weighted.reduce((s, x) => s + x.w, 0);
+      let r = Math.random() * total;
+      for (const part of weighted) {
+        r -= part.w;
+        if (r <= 0) return part.item;
+      }
+      return weighted[weighted.length - 1].item;
+    }
+
+    function pickType(isBoss) {
+      const bossPool = ["name_to_valence", "symbol_to_valence", "name_to_valence", "symbol_to_valence", "name_to_symbol"];
+      const normalPool = ["name_to_symbol", "symbol_to_name", "name_to_valence", "symbol_to_valence"];
+      return rand(isBoss ? bossPool : normalPool);
+    }
+
+    function buildQuestion(session) {
+      const item = weightedItem();
+      const type = pickType(session.info.isBoss);
+      let correct = "";
+      let prompt = "";
+      let meta = "";
+
+      if (type === "name_to_symbol") {
+        prompt = `写出 ${item.name} 的符号`;
+        correct = item.symbol;
+        meta = "名称 → 符号";
+      } else if (type === "symbol_to_name") {
+        prompt = `写出符号 ${item.symbol} 对应的名称`;
+        correct = item.name;
+        meta = "符号 → 名称";
+      } else if (type === "name_to_valence") {
+        prompt = `写出 ${item.name} 的常见化合价`;
+        correct = formatValences(item.valences);
+        meta = "名称 → 化合价";
+      } else {
+        prompt = `写出符号 ${item.symbol} 的常见化合价`;
+        correct = formatValences(item.valences);
+        meta = "符号 → 化合价";
+      }
+
+      let options = [];
+      if (type === "name_to_symbol") {
+        options = shuffle(BANK.filter((x) => x.id !== item.id && x.category === item.category).map((x) => x.symbol)).slice(0, 3);
+      } else if (type === "symbol_to_name") {
+        options = shuffle(BANK.filter((x) => x.id !== item.id && x.category === item.category).map((x) => x.name)).slice(0, 3);
+      } else {
+        const vals = shuffle(BANK.filter((x) => x.id !== item.id).map((x) => formatValences(x.valences)));
+        for (const v of vals) {
+          if (!options.includes(v)) options.push(v);
+          if (options.length >= 3) break;
+        }
+      }
+
+      options.push(correct);
+      options = shuffle(options).slice(0, 4);
+
+      return { item, type, correct, prompt, meta, options, answered: false };
+    }
+
+    function setQuestionCardEffect() {
+      els.questionCard.classList.remove("pop");
+      void els.questionCard.offsetWidth;
+      els.questionCard.classList.add("pop");
+    }
+
+    function renderQuestion() {
+      const q = app.question;
+      els.qMeta.textContent = `${q.meta} | 第 ${app.session.answered + 1}/${app.session.info.targetQuestions} 题`;
+      els.qText.textContent = q.prompt;
+      els.feedback.className = "feedback";
+      els.feedback.textContent = "";
+      els.options.innerHTML = "";
+
+      q.options.forEach((opt) => {
+        const btn = document.createElement("button");
+        btn.className = "opt";
+        btn.textContent = opt;
+        btn.addEventListener("click", () => answer(opt, btn));
+        els.options.appendChild(btn);
+      });
+    }
+
+    function heartsText(n) {
+      return "♥".repeat(Math.max(0, n));
+    }
+
+    function renderGameHead() {
+      if (!app.session) return;
+      const s = app.session;
+      els.gStage.textContent = `${s.info.isBoss ? "Boss" : "关卡"} ${s.info.stageNo}`;
+      els.gHearts.textContent = heartsText(s.hearts);
+      els.gCombo.textContent = String(s.combo);
+      els.gScore.textContent = String(s.score);
+      const ratio = Math.max(0, s.remaining / s.info.timeLimit);
+      els.gTimerBar.style.width = `${Math.round(ratio * 100)}%`;
+    }
+
+    function disableOptions() {
+      Array.from(els.options.children).forEach((b) => {
+        b.disabled = true;
+      });
+    }
+
+    function answer(selected, clickedBtn) {
+      const s = app.session;
+      const q = app.question;
+      if (!s || q.answered) return;
+      q.answered = true;
+      disableOptions();
+
+      const buttons = Array.from(els.options.children);
+      const correctBtn = buttons.find((x) => x.textContent === q.correct);
+      if (correctBtn) correctBtn.classList.add("correct");
+
+      if (selected === q.correct) {
+        clickedBtn.classList.add("correct");
+        s.correct += 1;
+        s.combo += 1;
+        s.maxCombo = Math.max(s.maxCombo, s.combo);
+        const comboBonus = Math.floor(s.combo / 3) * 12;
+        const timeBonus = Math.max(0, Math.floor(s.remaining * 0.5));
+        s.score += 100 + comboBonus + timeBonus;
+        applyDailyProgress("correct", 1);
+        updateMonster(q.item.id, -1);
+        setQuestionCardEffect();
+        els.feedback.className = "feedback ok";
+        els.feedback.textContent = `命中！+${100 + comboBonus + timeBonus} 分`;
+      } else {
+        clickedBtn.classList.add("bad");
+        s.wrong += 1;
+        s.combo = 0;
+        s.hearts -= 1;
+        updateMonster(q.item.id, 1);
+        els.feedback.className = "feedback bad";
+        els.feedback.textContent = `失误。正确答案：${q.correct}`;
+      }
+
+      s.answered += 1;
+      renderGameHead();
+      grantDailyRewardsIfReady();
+      renderMissions();
+      renderMonsters();
+
+      clearTimeout(app.nextTimeoutId);
+      app.nextTimeoutId = setTimeout(() => {
+        if (s.hearts <= 0) {
+          finishBattle(false, "生命值归零");
+          return;
+        }
+        if (s.answered >= s.info.targetQuestions) {
+          finishBattle(true, "已完成本关题量");
+          return;
+        }
+        app.question = buildQuestion(s);
+        renderQuestion();
+      }, 620);
+    }
+
+    function tick() {
+      const s = app.session;
+      if (!s) return;
+      s.remaining -= 1;
+      renderGameHead();
+      if (s.remaining <= 0) {
+        finishBattle(false, "时间耗尽");
+      }
+    }
+
+    function startBattle(stageNo) {
+      const info = stageInfo(stageNo);
+      app.session = {
+        info,
+        remaining: info.timeLimit,
+        hearts: info.maxHearts,
+        answered: 0,
+        correct: 0,
+        wrong: 0,
+        combo: 0,
+        maxCombo: 0,
+        score: 0
+      };
+
+      clearInterval(app.timerId);
+      app.timerId = setInterval(tick, 1000);
+
+      app.question = buildQuestion(app.session);
+      renderQuestion();
+      renderGameHead();
+      els.feedback.className = "feedback";
+      els.feedback.textContent = info.isBoss ? "Boss 关开启，化合价题占比更高。" : "关卡开始，保持连击。";
+    }
+
+    function starsForSession(s, cleared) {
+      if (!cleared) return 0;
+      if (s.wrong === 0 && s.hearts === s.info.maxHearts) return 3;
+      if (s.hearts >= Math.ceil(s.info.maxHearts / 2)) return 2;
+      return 1;
+    }
+
+    function finishBattle(cleared, reason) {
+      clearInterval(app.timerId);
+      clearTimeout(app.nextTimeoutId);
+      const s = app.session;
+      if (!s) return;
+
+      const accuracy = s.answered ? Math.round((s.correct / s.answered) * 100) : 0;
+      const stars = starsForSession(s, cleared);
+      const coinGain = cleared ? stars * 18 + Math.floor(s.maxCombo * 3) : 6;
+      const expGain = cleared ? s.correct * 11 + (s.info.isBoss ? 45 : 20) : s.correct * 5;
+
+      app.profile.totalScore += s.score;
+      app.profile.totalExp += expGain;
+      app.profile.coins += coinGain;
+      app.profile.bestCombo = Math.max(app.profile.bestCombo, s.maxCombo);
+
+      if (cleared) {
+        app.profile.cleared[String(s.info.stageNo)] = true;
+        const oldStars = bestStars(s.info.stageNo);
+        if (stars > oldStars) app.profile.bestStars[String(s.info.stageNo)] = stars;
+        app.profile.unlockedStage = Math.min(STAGE_COUNT, Math.max(app.profile.unlockedStage, s.info.stageNo + 1));
+        applyDailyProgress("stage", 1);
+        if (s.info.isBoss) {
+          app.profile.bossWins += 1;
+          applyDailyProgress("boss", 1);
+        }
+      }
+
+      if (cleared) setAchievement("first_clear");
+      if (s.maxCombo >= 8) setAchievement("combo_8");
+      if (cleared && s.wrong === 0 && s.hearts === s.info.maxHearts) setAchievement("perfect_stage");
+      if (cleared && s.info.isBoss) setAchievement("boss_slayer");
+      if (cleared && s.info.stageNo >= 10) setAchievement("stage10_clear");
+      const clearedAll = Array.from({ length: STAGE_COUNT }, (_, i) => i + 1).every((x) => !!app.profile.cleared[String(x)]);
+      if (clearedAll) setAchievement("map_master");
+
+      grantDailyRewardsIfReady();
+      refreshDashboard();
+
+      els.rTitle.textContent = cleared ? "通关成功" : "挑战失败";
+      els.rDesc.textContent = `${reason}。${cleared ? "继续推进关卡。" : "可重试当前关。"}`;
+      els.rStars.textContent = `${"★".repeat(stars)}${"☆".repeat(3 - stars)}`;
+      els.rAccuracy.textContent = `${accuracy}%`;
+      els.rCoins.textContent = `+${coinGain}`;
+      els.rExp.textContent = `+${expGain}`;
+      els.rNextBtn.disabled = !cleared || s.info.stageNo >= STAGE_COUNT;
+      els.resultMask.style.display = "flex";
+    }
+
+    function closeResult() {
+      els.resultMask.style.display = "none";
+      els.options.innerHTML = "";
+      els.qMeta.textContent = "选择关卡后开始";
+      els.qText.textContent = "点击上方地图中的关卡，然后点“开始选中关卡”。";
+      els.feedback.className = "feedback";
+      els.feedback.textContent = "";
+      app.session = null;
+      app.question = null;
+      clearInterval(app.timerId);
+      clearTimeout(app.nextTimeoutId);
+      els.gStage.textContent = "未开始";
+      els.gHearts.textContent = "♥♥♥";
+      els.gCombo.textContent = "0";
+      els.gScore.textContent = "0";
+      els.gTimerBar.style.width = "100%";
+    }
+
+    function resetAll() {
+      if (!confirm("确认重置所有游戏进度吗？")) return;
+      localStorage.removeItem(GAME_KEY);
+      location.reload();
+    }
+
+    els.startStageBtn.addEventListener("click", () => {
+      if (!canPlay(app.selectedStage)) {
+        alert("该关卡尚未解锁。");
+        return;
+      }
+      closeResult();
+      startBattle(app.selectedStage);
+    });
+
+    els.goDrillBtn.addEventListener("click", () => {
+      window.location.href = "./chem-valence-drill.html";
+    });
+
+    els.resetBtn.addEventListener("click", resetAll);
+
+    els.rReplayBtn.addEventListener("click", () => {
+      const stageNo = app.session ? app.session.info.stageNo : app.selectedStage;
+      els.resultMask.style.display = "none";
+      startBattle(stageNo);
+    });
+
+    els.rNextBtn.addEventListener("click", () => {
+      const current = app.session ? app.session.info.stageNo : app.selectedStage;
+      const next = Math.min(STAGE_COUNT, current + 1);
+      app.selectedStage = next;
+      els.resultMask.style.display = "none";
+      renderMap();
+      startBattle(next);
+    });
+
+    els.rCloseBtn.addEventListener("click", () => {
+      closeResult();
+    });
+
+    refreshDashboard();
+    closeResult();
+  </script>
+</body>
+</html>
