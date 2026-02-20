@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>化学价记忆训练</title>
+  <title>化合价记忆训练</title>
   <style>
     :root {
       --bg1: #f5efe2;
@@ -167,12 +167,6 @@
       color: var(--ink);
     }
 
-    .btn-danger {
-      background: #fff2ef;
-      border-color: rgba(180, 35, 24, 0.25);
-      color: var(--danger);
-    }
-
     .status {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -217,11 +211,28 @@
     }
 
     .question {
+      position: relative;
+      overflow: hidden;
       padding: 16px;
       border-radius: 12px;
       border: 1px solid rgba(15, 118, 110, 0.16);
       background: linear-gradient(120deg, #ffffff, #f2fbf8);
       margin-bottom: 12px;
+    }
+
+    .question.correct-pop {
+      animation: correct-pop 560ms ease;
+    }
+
+    .question.correct-pop::after {
+      content: "";
+      position: absolute;
+      inset: -36%;
+      background:
+        radial-gradient(circle, rgba(19, 115, 51, 0.28) 0%, rgba(19, 115, 51, 0) 64%),
+        conic-gradient(from 0deg, rgba(32, 162, 145, 0.28), rgba(18, 119, 111, 0), rgba(32, 162, 145, 0.28));
+      animation: correct-burst 560ms ease;
+      pointer-events: none;
     }
 
     .question small {
@@ -265,6 +276,7 @@
 
     .feedback.ok {
       color: var(--ok);
+      animation: feedback-pop 360ms ease;
     }
 
     .feedback.bad {
@@ -315,6 +327,23 @@
       display: none;
     }
 
+    @keyframes correct-pop {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.018); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes correct-burst {
+      0% { opacity: 0; transform: scale(0.35) rotate(0deg); }
+      30% { opacity: 0.7; }
+      100% { opacity: 0; transform: scale(1.1) rotate(34deg); }
+    }
+
+    @keyframes feedback-pop {
+      0% { transform: translateY(0); opacity: 0.4; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
     @media (max-width: 920px) {
       .setting-grid,
       .status,
@@ -345,7 +374,7 @@
   <main class="app">
     <section class="hero">
       <div>
-        <h1>化学价记忆训练</h1>
+        <h1>化合价记忆训练</h1>
         <p>基于你的手写清单，随机默写/选择，自动统计薄弱点并支持错题复练。</p>
       </div>
       <div class="chips">
@@ -409,7 +438,7 @@
       </div>
       <div class="progress"><i id="progressBar"></i></div>
 
-      <div class="question">
+      <div class="question" id="questionCard">
         <small id="qMeta">题型</small>
         <strong id="qText">题目加载中...</strong>
       </div>
@@ -424,8 +453,6 @@
       <div class="btn-row">
         <button class="btn btn-primary" id="submitBtn">提交</button>
         <button class="btn btn-light" id="nextBtn" disabled>下一题</button>
-        <button class="btn btn-light" id="skipBtn">跳过</button>
-        <button class="btn btn-danger" id="markBtn">标记不会</button>
       </div>
 
       <div class="feedback" id="feedback"></div>
@@ -507,6 +534,7 @@
       mStreak: document.getElementById("mStreak"),
       mAvgTime: document.getElementById("mAvgTime"),
       progressBar: document.getElementById("progressBar"),
+      questionCard: document.getElementById("questionCard"),
       qMeta: document.getElementById("qMeta"),
       qText: document.getElementById("qText"),
       writeArea: document.getElementById("writeArea"),
@@ -514,8 +542,6 @@
       answerInput: document.getElementById("answerInput"),
       submitBtn: document.getElementById("submitBtn"),
       nextBtn: document.getElementById("nextBtn"),
-      skipBtn: document.getElementById("skipBtn"),
-      markBtn: document.getElementById("markBtn"),
       feedback: document.getElementById("feedback"),
       rTotal: document.getElementById("rTotal"),
       rCorrect: document.getElementById("rCorrect"),
@@ -635,14 +661,11 @@
     function weightedPick(candidates, sessionStats) {
       const recentTail = sessionStats.sequence.slice(-4);
       const weighted = candidates.map((item) => {
-        const h = app.history[item.id] || { attempts: 0, wrong: 0, marked: 0 };
-        const s = sessionStats.itemStats[item.id] || { wrong: 0, skip: 0, seen: 0, marked: 0 };
+        const h = app.history[item.id] || { attempts: 0, wrong: 0 };
+        const s = sessionStats.itemStats[item.id] || { wrong: 0, seen: 0 };
         let w = 1;
         w += h.wrong * 0.28;
-        w += h.marked * 0.35;
         w += s.wrong * 1.15;
-        w += s.skip * 0.75;
-        w += s.marked * 1.2;
         if (recentTail.includes(item.id)) w *= 0.35;
         if (s.seen > 0) w *= 0.84;
         return { item, w: Math.max(0.15, w) };
@@ -761,9 +784,9 @@
     function resetForQuestion() {
       els.feedback.textContent = "";
       els.feedback.className = "feedback";
+      els.questionCard.classList.remove("correct-pop");
       els.submitBtn.disabled = false;
       els.nextBtn.disabled = true;
-      els.skipBtn.disabled = false;
       els.answerInput.value = "";
       if (app.settings.mode === "write") {
         els.answerInput.focus();
@@ -822,35 +845,31 @@
 
     function appendItemStat(id, updater) {
       if (!app.session.itemStats[id]) {
-        app.session.itemStats[id] = { seen: 0, wrong: 0, skip: 0, marked: 0 };
+        app.session.itemStats[id] = { seen: 0, wrong: 0 };
       }
       updater(app.session.itemStats[id]);
     }
 
     function appendHistory(id, updater) {
       if (!app.history[id]) {
-        app.history[id] = { attempts: 0, correct: 0, wrong: 0, marked: 0, totalMs: 0 };
+        app.history[id] = { attempts: 0, correct: 0, wrong: 0, totalMs: 0 };
       }
       updater(app.history[id]);
     }
 
-    function submitAnswer(mode) {
+    function playCorrectAnimation() {
+      els.questionCard.classList.remove("correct-pop");
+      void els.questionCard.offsetWidth;
+      els.questionCard.classList.add("correct-pop");
+    }
+
+    function submitAnswer() {
       if (els.submitBtn.disabled) return;
       const q = app.question;
       const elapsed = Math.max(300, Date.now() - q.startAt);
-      let evalResult;
-
-      if (mode === "skip") {
-        evalResult = {
-          ok: false,
-          user: "(跳过)",
-          expected: expectedText(q)
-        };
-      } else {
-        evalResult = app.settings.mode === "write"
-          ? evaluateWrite(q, els.answerInput.value)
-          : evaluateChoice(q);
-      }
+      const evalResult = app.settings.mode === "write"
+        ? evaluateWrite(q, els.answerInput.value)
+        : evaluateChoice(q);
 
       const record = {
         id: q.item.id,
@@ -861,8 +880,7 @@
         ok: evalResult.ok,
         user: evalResult.user,
         expected: evalResult.expected,
-        ms: elapsed,
-        skipped: mode === "skip"
+        ms: elapsed
       };
 
       app.session.records.push(record);
@@ -870,7 +888,6 @@
       appendItemStat(q.item.id, (stat) => {
         stat.seen += 1;
         if (!record.ok) stat.wrong += 1;
-        if (record.skipped) stat.skip += 1;
       });
 
       appendHistory(q.item.id, (h) => {
@@ -883,6 +900,7 @@
 
       if (record.ok) {
         app.session.streak += 1;
+        playCorrectAnimation();
         els.feedback.className = "feedback ok";
         els.feedback.textContent = `正确。标准答案：${record.expected}`;
       } else {
@@ -894,7 +912,6 @@
 
       els.submitBtn.disabled = true;
       els.nextBtn.disabled = false;
-      els.skipBtn.disabled = true;
       updateQuizStats();
     }
 
@@ -970,7 +987,7 @@
       const rows = Object.entries(app.session.itemStats)
         .map(([id, stat]) => {
           const item = BANK.find((x) => x.id === id);
-          const score = stat.wrong * 2 + stat.skip;
+          const score = stat.wrong * 2;
           return { id, name: item ? item.name : id, score, seen: stat.seen, wrong: stat.wrong };
         })
         .filter((x) => x.score > 0)
@@ -1029,23 +1046,10 @@
     });
 
     els.submitBtn.addEventListener("click", () => {
-      submitAnswer("submit");
+      submitAnswer();
     });
 
     els.nextBtn.addEventListener("click", nextStep);
-
-    els.skipBtn.addEventListener("click", () => {
-      submitAnswer("skip");
-    });
-
-    els.markBtn.addEventListener("click", () => {
-      const id = app.question.item.id;
-      appendItemStat(id, (s) => { s.marked += 1; });
-      appendHistory(id, (h) => { h.marked += 1; });
-      saveHistory();
-      els.feedback.className = "feedback bad";
-      els.feedback.textContent = "已标记“不会”，后续会提高该知识点出现频率。";
-    });
 
     els.againBtn.addEventListener("click", () => {
       readSettings();
@@ -1066,7 +1070,7 @@
 
     els.answerInput.addEventListener("keydown", (evt) => {
       if (evt.key === "Enter" && !els.submitBtn.disabled) {
-        submitAnswer("submit");
+        submitAnswer();
       }
     });
 
