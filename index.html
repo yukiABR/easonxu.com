@@ -20,15 +20,36 @@
       place-items: center;
       background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url("./sea.jpg") center/cover no-repeat fixed;
     }
+    .wrap {
+      text-align: center;
+      padding: 20px;
+    }
     h1 {
-      margin: 0;
+      margin: 0 0 18px;
       font-size: clamp(40px, 12vw, 120px);
       font-weight: 700;
       letter-spacing: 0.1em;
     }
+    a {
+      display: inline-block;
+      color: #fff;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(2px);
+    }
+    a:hover {
+      background: rgba(0, 0, 0, 0.38);
+    }
   </style>
 </head>
 <body>
-  <h1>新年快乐</h1>
+  <div class="wrap">
+    <h1>新年快乐</h1>
+    <a href="./chem-valence-drill.html">进入化学价训练</a>
+  </div>
 </body>
 </html>

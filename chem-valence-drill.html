@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>化学价记忆训练</title>
+  <style>
+    :root {
+      --bg1: #f5efe2;
+      --bg2: #d8e9e5;
+      --ink: #21302a;
+      --muted: #50635b;
+      --card: #fffdf8;
+      --line: #c8d6cf;
+      --accent: #0f766e;
+      --accent-soft: #d8f0ec;
+      --danger: #b42318;
+      --ok: #137333;
+      --shadow: 0 14px 34px rgba(24, 58, 48, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 12%, rgba(15, 118, 110, 0.16), transparent 26%),
+        radial-gradient(circle at 82% 8%, rgba(184, 35, 24, 0.11), transparent 18%),
+        linear-gradient(130deg, var(--bg1), var(--bg2));
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero {
+      background: linear-gradient(145deg, rgba(255, 253, 248, 0.95), rgba(233, 245, 241, 0.86));
+      border: 1px solid rgba(15, 118, 110, 0.2);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 22px 24px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 2vw, 2.05rem);
+      letter-spacing: 0.02em;
+    }
+
+    .hero p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(15, 118, 110, 0.25);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid rgba(33, 48, 42, 0.12);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 1.15rem;
+    }
+
+    .setting-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    select,
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      font: inherit;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    .btn:focus {
+      outline: 2px solid rgba(15, 118, 110, 0.35);
+      outline-offset: 1px;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 11px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(31, 56, 47, 0.12);
+      filter: saturate(1.04);
+    }
+
+    .btn:disabled {
+      opacity: 0.58;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-light {
+      background: #fff;
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    .btn-danger {
+      background: #fff2ef;
+      border-color: rgba(180, 35, 24, 0.25);
+      color: var(--danger);
+    }
+
+    .status {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .metric {
+      background: #f8fbfa;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1rem;
+      color: var(--ink);
+      margin-top: 4px;
+    }
+
+    .metric span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #d9e4df;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #0f766e, #20a291);
+      transition: width 0.28s ease;
+    }
+
+    .question {
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(15, 118, 110, 0.16);
+      background: linear-gradient(120deg, #ffffff, #f2fbf8);
+      margin-bottom: 12px;
+    }
+
+    .question small {
+      color: var(--muted);
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.84rem;
+    }
+
+    .question strong {
+      font-size: clamp(1.12rem, 2vw, 1.44rem);
+      line-height: 1.45;
+    }
+
+    .choice-list {
+      display: grid;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .choice-item {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      padding: 9px 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .choice-item.selected {
+      border-color: var(--accent);
+      background: #e6f5f1;
+    }
+
+    .feedback {
+      min-height: 24px;
+      margin-top: 10px;
+      font-size: 0.94rem;
+    }
+
+    .feedback.ok {
+      color: var(--ok);
+    }
+
+    .feedback.bad {
+      color: var(--danger);
+    }
+
+    .result-block {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+    }
+
+    .box h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .box ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .box li {
+      padding: 7px 8px;
+      border: 1px dashed #c8d6cf;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .hint {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 920px) {
+      .setting-grid,
+      .status,
+      .result-block {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      body {
+        padding: 14px;
+      }
+
+      .setting-grid,
+      .status,
+      .result-block {
+        grid-template-columns: 1fr;
+      }
+
+      .hero,
+      .panel {
+        border-radius: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div>
+        <h1>化学价记忆训练</h1>
+        <p>基于你的手写清单，随机默写/选择，自动统计薄弱点并支持错题复练。</p>
+      </div>
+      <div class="chips">
+        <span class="chip" id="chipTotal">总条目 26</span>
+        <span class="chip">模式：默写 + 选择</span>
+        <span class="chip">规则：多价态集合判等</span>
+      </div>
+    </section>
+
+    <section class="panel" id="setupPanel">
+      <h2>练习设置</h2>
+      <div class="setting-grid">
+        <div>
+          <label for="modeSelect">题型</label>
+          <select id="modeSelect">
+            <option value="write">默写</option>
+            <option value="choice">选择</option>
+          </select>
+        </div>
+        <div>
+          <label for="directionSelect">方向</label>
+          <select id="directionSelect">
+            <option value="mixed">混合</option>
+            <option value="name_to_symbol">名称 → 符号</option>
+            <option value="name_to_valence">名称 → 化合价</option>
+            <option value="symbol_to_name">符号 → 名称</option>
+            <option value="symbol_to_valence">符号 → 化合价</option>
+          </select>
+        </div>
+        <div>
+          <label for="countSelect">题量</label>
+          <select id="countSelect">
+            <option value="10">10 题</option>
+            <option value="20" selected>20 题</option>
+            <option value="30">30 题</option>
+          </select>
+        </div>
+        <div>
+          <label for="scopeSelect">范围</label>
+          <select id="scopeSelect">
+            <option value="all">全部</option>
+            <option value="element">仅元素</option>
+            <option value="radical">仅根离子</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="startBtn">开始练习</button>
+        <button class="btn btn-light" id="retryWrongBtn" disabled>只练错题</button>
+        <button class="btn btn-light" id="resetHistoryBtn">清空历史统计</button>
+      </div>
+      <div class="hint">输入容错示例：`+2,+3`、`2+ 3+`、`+2，+3` 都可识别为同一答案。</div>
+    </section>
+
+    <section class="panel hidden" id="quizPanel">
+      <div class="status">
+        <div class="metric"><span>进度</span><strong id="mProgress">0/0</strong></div>
+        <div class="metric"><span>正确率</span><strong id="mAccuracy">0%</strong></div>
+        <div class="metric"><span>当前连对</span><strong id="mStreak">0</strong></div>
+        <div class="metric"><span>平均用时</span><strong id="mAvgTime">0.0s</strong></div>
+      </div>
+      <div class="progress"><i id="progressBar"></i></div>
+
+      <div class="question">
+        <small id="qMeta">题型</small>
+        <strong id="qText">题目加载中...</strong>
+      </div>
+
+      <div id="writeArea">
+        <label for="answerInput">你的答案</label>
+        <input id="answerInput" type="text" placeholder="请输入答案" autocomplete="off" />
+      </div>
+
+      <div id="choiceArea" class="choice-list hidden"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="submitBtn">提交</button>
+        <button class="btn btn-light" id="nextBtn" disabled>下一题</button>
+        <button class="btn btn-light" id="skipBtn">跳过</button>
+        <button class="btn btn-danger" id="markBtn">标记不会</button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+    </section>
+
+    <section class="panel hidden" id="resultPanel">
+      <h2>本轮结果</h2>
+      <div class="status" style="margin-top:8px;">
+        <div class="metric"><span>总题数</span><strong id="rTotal">0</strong></div>
+        <div class="metric"><span>正确数</span><strong id="rCorrect">0</strong></div>
+        <div class="metric"><span>正确率</span><strong id="rAccuracy">0%</strong></div>
+        <div class="metric"><span>平均用时</span><strong id="rAvgTime">0.0s</strong></div>
+      </div>
+      <div class="result-block">
+        <div class="box">
+          <h3>薄弱点 Top 5</h3>
+          <ul id="weakList"></ul>
+        </div>
+        <div class="box">
+          <h3>错题回放</h3>
+          <ul id="wrongList"></ul>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="againBtn">再来一轮</button>
+        <button class="btn btn-light" id="wrongAgainBtn" disabled>只练本轮错题</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const BANK = [
+      { id: "E01", name: "钾", symbol: "K", symbolAnswer: "K", valences: ["+1"], category: "element" },
+      { id: "E02", name: "钠", symbol: "Na", symbolAnswer: "Na", valences: ["+1"], category: "element" },
+      { id: "E03", name: "银", symbol: "Ag", symbolAnswer: "Ag", valences: ["+1"], category: "element" },
+      { id: "E04", name: "钙", symbol: "Ca", symbolAnswer: "Ca", valences: ["+2"], category: "element" },
+      { id: "E05", name: "镁", symbol: "Mg", symbolAnswer: "Mg", valences: ["+2"], category: "element" },
+      { id: "E06", name: "钡", symbol: "Ba", symbolAnswer: "Ba", valences: ["+2"], category: "element" },
+      { id: "E07", name: "铜", symbol: "Cu", symbolAnswer: "Cu", valences: ["+1", "+2"], category: "element" },
+      { id: "E08", name: "铁", symbol: "Fe", symbolAnswer: "Fe", valences: ["+2", "+3"], category: "element" },
+      { id: "E09", name: "铝", symbol: "Al", symbolAnswer: "Al", valences: ["+3"], category: "element" },
+      { id: "E10", name: "锰", symbol: "Mn", symbolAnswer: "Mn", valences: ["+2", "+4", "+6", "+7"], category: "element" },
+      { id: "E11", name: "锌", symbol: "Zn", symbolAnswer: "Zn", valences: ["+2"], category: "element" },
+      { id: "E12", name: "氢", symbol: "H", symbolAnswer: "H", valences: ["+1"], category: "element" },
+      { id: "E13", name: "氟", symbol: "F", symbolAnswer: "F", valences: ["-1"], category: "element" },
+
+      { id: "E14", name: "氯", symbol: "Cl", symbolAnswer: "Cl", valences: ["-1", "+1", "+5", "+7"], category: "element" },
+      { id: "E15", name: "溴", symbol: "Br", symbolAnswer: "Br", valences: ["-1"], category: "element" },
+      { id: "E16", name: "氧", symbol: "O", symbolAnswer: "O", valences: ["-2"], category: "element" },
+      { id: "E17", name: "硫", symbol: "S", symbolAnswer: "S", valences: ["-2", "+4", "+6"], category: "element" },
+      { id: "E18", name: "碳", symbol: "C", symbolAnswer: "C", valences: ["+2", "+4"], category: "element" },
+      { id: "E19", name: "硅", symbol: "Si", symbolAnswer: "Si", valences: ["+4"], category: "element" },
+      { id: "E20", name: "氮", symbol: "N", symbolAnswer: "N", valences: ["-3", "+2", "+3", "+4", "+5"], category: "element" },
+      { id: "E21", name: "磷", symbol: "P", symbolAnswer: "P", valences: ["-3", "+3", "+5"], category: "element" },
+
+      { id: "R01", name: "氢氧根", symbol: "OH⁻", symbolAnswer: "OH", valences: ["-1"], category: "radical" },
+      { id: "R02", name: "硝酸根", symbol: "NO₃⁻", symbolAnswer: "NO3", valences: ["-1"], category: "radical" },
+      { id: "R03", name: "硫酸根", symbol: "SO₄²⁻", symbolAnswer: "SO4", valences: ["-2"], category: "radical" },
+      { id: "R04", name: "碳酸根", symbol: "CO₃²⁻", symbolAnswer: "CO3", valences: ["-2"], category: "radical" },
+      { id: "R05", name: "铵根", symbol: "NH₄⁺", symbolAnswer: "NH4", valences: ["+1"], category: "radical" }
+    ];
+
+    const HISTORY_KEY = "chem_valence_history_v1";
+
+    const els = {
+      chipTotal: document.getElementById("chipTotal"),
+      setupPanel: document.getElementById("setupPanel"),
+      quizPanel: document.getElementById("quizPanel"),
+      resultPanel: document.getElementById("resultPanel"),
+      modeSelect: document.getElementById("modeSelect"),
+      directionSelect: document.getElementById("directionSelect"),
+      countSelect: document.getElementById("countSelect"),
+      scopeSelect: document.getElementById("scopeSelect"),
+      startBtn: document.getElementById("startBtn"),
+      retryWrongBtn: document.getElementById("retryWrongBtn"),
+      resetHistoryBtn: document.getElementById("resetHistoryBtn"),
+      mProgress: document.getElementById("mProgress"),
+      mAccuracy: document.getElementById("mAccuracy"),
+      mStreak: document.getElementById("mStreak"),
+      mAvgTime: document.getElementById("mAvgTime"),
+      progressBar: document.getElementById("progressBar"),
+      qMeta: document.getElementById("qMeta"),
+      qText: document.getElementById("qText"),
+      writeArea: document.getElementById("writeArea"),
+      choiceArea: document.getElementById("choiceArea"),
+      answerInput: document.getElementById("answerInput"),
+      submitBtn: document.getElementById("submitBtn"),
+      nextBtn: document.getElementById("nextBtn"),
+      skipBtn: document.getElementById("skipBtn"),
+      markBtn: document.getElementById("markBtn"),
+      feedback: document.getElementById("feedback"),
+      rTotal: document.getElementById("rTotal"),
+      rCorrect: document.getElementById("rCorrect"),
+      rAccuracy: document.getElementById("rAccuracy"),
+      rAvgTime: document.getElementById("rAvgTime"),
+      weakList: document.getElementById("weakList"),
+      wrongList: document.getElementById("wrongList"),
+      againBtn: document.getElementById("againBtn"),
+      wrongAgainBtn: document.getElementById("wrongAgainBtn")
+    };
+
+    const app = {
+      history: loadHistory(),
+      settings: null,
+      bank: [],
+      wrongPool: [],
+      session: null,
+      question: null
+    };
+
+    const DIRECTIONS = ["name_to_symbol", "name_to_valence", "symbol_to_name", "symbol_to_valence"];
+
+    els.chipTotal.textContent = `总条目 ${BANK.length}`;
+
+    function loadHistory() {
+      try {
+        return JSON.parse(localStorage.getItem(HISTORY_KEY) || "{}");
+      } catch (err) {
+        return {};
+      }
+    }
+
+    function saveHistory() {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(app.history));
+    }
+
+    function normalizeSymbolInput(raw) {
+      return raw
+        .trim()
+        .replace(/[₀-₉]/g, (m) => String("₀₁₂₃₄₅₆₇₈₉".indexOf(m)))
+        .replace(/[＋]/g, "+")
+        .replace(/[－]/g, "-")
+        .replace(/[\s\^]/g, "")
+        .replace(/[⁺⁻]/g, "")
+        .replace(/[+\-]\d*$/g, "")
+        .replace(/\d*[+\-]$/g, "")
+        .toUpperCase();
+    }
+
+    function normalizeNameInput(raw) {
+      return raw.trim().replace(/\s+/g, "");
+    }
+
+    function normalizeValenceToken(token) {
+      const t = token.trim().replace(/[＋]/g, "+").replace(/[－]/g, "-");
+      if (!t) return null;
+
+      const form1 = t.match(/^([+-]?)(\d+)$/);
+      if (form1) {
+        const sign = form1[1] || "+";
+        const n = Number(form1[2]);
+        return `${sign}${n}`;
+      }
+
+      const form2 = t.match(/^(\d+)([+-])$/);
+      if (form2) {
+        return `${form2[2]}${Number(form2[1])}`;
+      }
+
+      const form3 = t.match(/^([+-])(\d+)$/);
+      if (form3) {
+        return `${form3[1]}${Number(form3[2])}`;
+      }
+
+      return null;
+    }
+
+    function normalizeValenceInput(raw) {
+      const split = raw
+        .trim()
+        .replace(/[，；;\/]/g, ",")
+        .replace(/\s+/g, ",")
+        .split(",")
+        .filter(Boolean)
+        .map(normalizeValenceToken)
+        .filter(Boolean);
+
+      const uniq = Array.from(new Set(split));
+      uniq.sort((a, b) => Number(a) - Number(b));
+      return uniq;
+    }
+
+    function formatValence(values) {
+      return values.join(" , ");
+    }
+
+    function canonicalValence(values) {
+      const uniq = Array.from(new Set(values.map(normalizeValenceToken).filter(Boolean)));
+      uniq.sort((a, b) => Number(a) - Number(b));
+      return uniq;
+    }
+
+    function arraysEqual(a, b) {
+      if (a.length !== b.length) return false;
+      for (let i = 0; i < a.length; i += 1) {
+        if (a[i] !== b[i]) return false;
+      }
+      return true;
+    }
+
+    function getPool(scope) {
+      if (scope === "element") return BANK.filter((x) => x.category === "element");
+      if (scope === "radical") return BANK.filter((x) => x.category === "radical");
+      return BANK.slice();
+    }
+
+    function weightedPick(candidates, sessionStats) {
+      const recentTail = sessionStats.sequence.slice(-4);
+      const weighted = candidates.map((item) => {
+        const h = app.history[item.id] || { attempts: 0, wrong: 0, marked: 0 };
+        const s = sessionStats.itemStats[item.id] || { wrong: 0, skip: 0, seen: 0, marked: 0 };
+        let w = 1;
+        w += h.wrong * 0.28;
+        w += h.marked * 0.35;
+        w += s.wrong * 1.15;
+        w += s.skip * 0.75;
+        w += s.marked * 1.2;
+        if (recentTail.includes(item.id)) w *= 0.35;
+        if (s.seen > 0) w *= 0.84;
+        return { item, w: Math.max(0.15, w) };
+      });
+
+      const total = weighted.reduce((sum, it) => sum + it.w, 0);
+      let r = Math.random() * total;
+      for (const part of weighted) {
+        r -= part.w;
+        if (r <= 0) return part.item;
+      }
+      return weighted[weighted.length - 1].item;
+    }
+
+    function buildQuestion(session) {
+      const item = weightedPick(session.pool, session);
+      const direction = app.settings.direction === "mixed"
+        ? DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)]
+        : app.settings.direction;
+
+      const q = { item, direction, startAt: Date.now(), picked: null };
+
+      if (app.settings.mode === "choice") {
+        q.options = buildOptions(item, direction, session.pool);
+      }
+
+      return q;
+    }
+
+    function buildOptions(item, direction, pool) {
+      const options = [];
+      let correct = "";
+
+      if (direction === "name_to_symbol" || direction === "symbol_to_name") {
+        const source = pool.filter((x) => x.id !== item.id && x.category === item.category);
+        const sampled = shuffle(source).slice(0, 3);
+        for (const d of sampled) {
+          options.push(direction === "name_to_symbol" ? d.symbol : d.name);
+        }
+        correct = direction === "name_to_symbol" ? item.symbol : item.name;
+      } else {
+        const source = pool.filter((x) => x.id !== item.id);
+        const sampled = shuffle(source).slice(0, 12);
+        for (const d of sampled) {
+          const v = formatValence(canonicalValence(d.valences));
+          if (!options.includes(v)) options.push(v);
+          if (options.length >= 3) break;
+        }
+        correct = formatValence(canonicalValence(item.valences));
+      }
+
+      options.push(correct);
+      return shuffle(options).slice(0, 4);
+    }
+
+    function shuffle(arr) {
+      const out = arr.slice();
+      for (let i = out.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [out[i], out[j]] = [out[j], out[i]];
+      }
+      return out;
+    }
+
+    function questionMeta(direction) {
+      switch (direction) {
+        case "name_to_symbol": return "名称 → 符号";
+        case "name_to_valence": return "名称 → 化合价";
+        case "symbol_to_name": return "符号 → 名称";
+        case "symbol_to_valence": return "符号 → 化合价";
+        default: return "混合";
+      }
+    }
+
+    function questionText(q) {
+      if (q.direction === "name_to_symbol") return `写出 ${q.item.name} 的符号`;
+      if (q.direction === "name_to_valence") return `写出 ${q.item.name} 的常见化合价`;
+      if (q.direction === "symbol_to_name") return `写出符号 ${q.item.symbol} 对应的名称`;
+      return `写出符号 ${q.item.symbol} 的常见化合价`;
+    }
+
+    function expectedText(q) {
+      if (q.direction === "name_to_symbol") return q.item.symbol;
+      if (q.direction === "name_to_valence") return formatValence(canonicalValence(q.item.valences));
+      if (q.direction === "symbol_to_name") return q.item.name;
+      return formatValence(canonicalValence(q.item.valences));
+    }
+
+    function evaluateWrite(q, inputRaw) {
+      if (q.direction === "name_to_symbol") {
+        const got = normalizeSymbolInput(inputRaw);
+        const want = normalizeSymbolInput(q.item.symbolAnswer);
+        return { ok: got === want, user: inputRaw.trim() || "(空)", expected: q.item.symbol };
+      }
+
+      if (q.direction === "symbol_to_name") {
+        const got = normalizeNameInput(inputRaw);
+        const want = normalizeNameInput(q.item.name);
+        return { ok: got === want, user: inputRaw.trim() || "(空)", expected: q.item.name };
+      }
+
+      const gotSet = normalizeValenceInput(inputRaw);
+      const wantSet = canonicalValence(q.item.valences);
+      return {
+        ok: arraysEqual(gotSet, wantSet),
+        user: gotSet.length ? formatValence(gotSet) : "(空)",
+        expected: formatValence(wantSet)
+      };
+    }
+
+    function evaluateChoice(q) {
+      const expected = expectedText(q);
+      return { ok: q.picked === expected, user: q.picked || "(未选择)", expected };
+    }
+
+    function resetForQuestion() {
+      els.feedback.textContent = "";
+      els.feedback.className = "feedback";
+      els.submitBtn.disabled = false;
+      els.nextBtn.disabled = true;
+      els.skipBtn.disabled = false;
+      els.answerInput.value = "";
+      if (app.settings.mode === "write") {
+        els.answerInput.focus();
+      }
+    }
+
+    function renderQuestion() {
+      const q = app.question;
+      els.qMeta.textContent = `${questionMeta(q.direction)} | ${app.settings.mode === "write" ? "默写" : "选择"}`;
+      els.qText.textContent = questionText(q);
+
+      if (app.settings.mode === "write") {
+        els.writeArea.classList.remove("hidden");
+        els.choiceArea.classList.add("hidden");
+        els.answerInput.placeholder = q.direction.includes("valence") ? "示例：+2,+3" : "请输入答案";
+      } else {
+        els.writeArea.classList.add("hidden");
+        els.choiceArea.classList.remove("hidden");
+        renderChoices(q.options);
+      }
+
+      resetForQuestion();
+      updateQuizStats();
+    }
+
+    function renderChoices(options) {
+      els.choiceArea.innerHTML = "";
+      options.forEach((text) => {
+        const div = document.createElement("div");
+        div.className = "choice-item";
+        div.textContent = text;
+        div.addEventListener("click", () => {
+          Array.from(els.choiceArea.children).forEach((it) => it.classList.remove("selected"));
+          div.classList.add("selected");
+          app.question.picked = text;
+        });
+        els.choiceArea.appendChild(div);
+      });
+    }
+
+    function updateQuizStats() {
+      const s = app.session;
+      const answered = s.records.length;
+      const correct = s.records.filter((r) => r.ok).length;
+      const acc = answered ? Math.round((correct / answered) * 100) : 0;
+      const avg = answered
+        ? (s.records.reduce((sum, r) => sum + r.ms, 0) / answered / 1000).toFixed(1)
+        : "0.0";
+
+      els.mProgress.textContent = `${Math.min(answered + 1, s.target)}/${s.target}`;
+      els.mAccuracy.textContent = `${acc}%`;
+      els.mStreak.textContent = String(s.streak);
+      els.mAvgTime.textContent = `${avg}s`;
+      els.progressBar.style.width = `${Math.min((answered / s.target) * 100, 100)}%`;
+    }
+
+    function appendItemStat(id, updater) {
+      if (!app.session.itemStats[id]) {
+        app.session.itemStats[id] = { seen: 0, wrong: 0, skip: 0, marked: 0 };
+      }
+      updater(app.session.itemStats[id]);
+    }
+
+    function appendHistory(id, updater) {
+      if (!app.history[id]) {
+        app.history[id] = { attempts: 0, correct: 0, wrong: 0, marked: 0, totalMs: 0 };
+      }
+      updater(app.history[id]);
+    }
+
+    function submitAnswer(mode) {
+      if (els.submitBtn.disabled) return;
+      const q = app.question;
+      const elapsed = Math.max(300, Date.now() - q.startAt);
+      let evalResult;
+
+      if (mode === "skip") {
+        evalResult = {
+          ok: false,
+          user: "(跳过)",
+          expected: expectedText(q)
+        };
+      } else {
+        evalResult = app.settings.mode === "write"
+          ? evaluateWrite(q, els.answerInput.value)
+          : evaluateChoice(q);
+      }
+
+      const record = {
+        id: q.item.id,
+        name: q.item.name,
+        symbol: q.item.symbol,
+        direction: q.direction,
+        mode: app.settings.mode,
+        ok: evalResult.ok,
+        user: evalResult.user,
+        expected: evalResult.expected,
+        ms: elapsed,
+        skipped: mode === "skip"
+      };
+
+      app.session.records.push(record);
+      app.session.sequence.push(q.item.id);
+      appendItemStat(q.item.id, (stat) => {
+        stat.seen += 1;
+        if (!record.ok) stat.wrong += 1;
+        if (record.skipped) stat.skip += 1;
+      });
+
+      appendHistory(q.item.id, (h) => {
+        h.attempts += 1;
+        h.totalMs += elapsed;
+        if (record.ok) h.correct += 1;
+        else h.wrong += 1;
+      });
+      saveHistory();
+
+      if (record.ok) {
+        app.session.streak += 1;
+        els.feedback.className = "feedback ok";
+        els.feedback.textContent = `正确。标准答案：${record.expected}`;
+      } else {
+        app.session.streak = 0;
+        app.session.wrongIds.add(q.item.id);
+        els.feedback.className = "feedback bad";
+        els.feedback.textContent = `不正确。你的答案：${record.user}；标准答案：${record.expected}`;
+      }
+
+      els.submitBtn.disabled = true;
+      els.nextBtn.disabled = false;
+      els.skipBtn.disabled = true;
+      updateQuizStats();
+    }
+
+    function nextStep() {
+      if (app.session.records.length >= app.session.target) {
+        finishSession();
+        return;
+      }
+      app.question = buildQuestion(app.session);
+      renderQuestion();
+    }
+
+    function beginSession(onlyWrong = false) {
+      const scopePool = getPool(app.settings.scope);
+      let pool = scopePool;
+
+      if (onlyWrong) {
+        const wrongSet = new Set(app.wrongPool);
+        pool = scopePool.filter((x) => wrongSet.has(x.id));
+      }
+
+      if (!pool.length) {
+        alert("当前范围没有可练习的条目。");
+        return;
+      }
+
+      app.session = {
+        pool,
+        target: Number(app.settings.count),
+        records: [],
+        streak: 0,
+        wrongIds: new Set(),
+        itemStats: {},
+        sequence: []
+      };
+
+      els.setupPanel.classList.add("hidden");
+      els.resultPanel.classList.add("hidden");
+      els.quizPanel.classList.remove("hidden");
+
+      app.question = buildQuestion(app.session);
+      renderQuestion();
+    }
+
+    function finishSession() {
+      const records = app.session.records;
+      const total = records.length;
+      const correct = records.filter((r) => r.ok).length;
+      const accuracy = total ? Math.round((correct / total) * 100) : 0;
+      const avgTime = total
+        ? (records.reduce((sum, r) => sum + r.ms, 0) / total / 1000).toFixed(1)
+        : "0.0";
+
+      app.wrongPool = Array.from(app.session.wrongIds);
+
+      els.rTotal.textContent = String(total);
+      els.rCorrect.textContent = String(correct);
+      els.rAccuracy.textContent = `${accuracy}%`;
+      els.rAvgTime.textContent = `${avgTime}s`;
+
+      renderWeakList();
+      renderWrongList();
+
+      els.wrongAgainBtn.disabled = app.wrongPool.length === 0;
+      els.retryWrongBtn.disabled = app.wrongPool.length === 0;
+
+      els.quizPanel.classList.add("hidden");
+      els.resultPanel.classList.remove("hidden");
+      els.setupPanel.classList.remove("hidden");
+    }
+
+    function renderWeakList() {
+      const rows = Object.entries(app.session.itemStats)
+        .map(([id, stat]) => {
+          const item = BANK.find((x) => x.id === id);
+          const score = stat.wrong * 2 + stat.skip;
+          return { id, name: item ? item.name : id, score, seen: stat.seen, wrong: stat.wrong };
+        })
+        .filter((x) => x.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+
+      els.weakList.innerHTML = "";
+      if (!rows.length) {
+        const li = document.createElement("li");
+        li.textContent = "本轮没有明显薄弱点。";
+        els.weakList.appendChild(li);
+        return;
+      }
+
+      rows.forEach((r) => {
+        const li = document.createElement("li");
+        li.textContent = `${r.name}：错误 ${r.wrong}/${r.seen}`;
+        els.weakList.appendChild(li);
+      });
+    }
+
+    function renderWrongList() {
+      const wrongRows = app.session.records.filter((r) => !r.ok);
+      els.wrongList.innerHTML = "";
+      if (!wrongRows.length) {
+        const li = document.createElement("li");
+        li.textContent = "本轮全对。";
+        els.wrongList.appendChild(li);
+        return;
+      }
+
+      wrongRows.slice(0, 10).forEach((r) => {
+        const li = document.createElement("li");
+        li.textContent = `${questionMeta(r.direction)} | ${r.name}(${r.symbol}) | 你的答案: ${r.user} | 正确答案: ${r.expected}`;
+        els.wrongList.appendChild(li);
+      });
+    }
+
+    function readSettings() {
+      app.settings = {
+        mode: els.modeSelect.value,
+        direction: els.directionSelect.value,
+        count: els.countSelect.value,
+        scope: els.scopeSelect.value
+      };
+    }
+
+    els.startBtn.addEventListener("click", () => {
+      readSettings();
+      beginSession(false);
+    });
+
+    els.retryWrongBtn.addEventListener("click", () => {
+      readSettings();
+      beginSession(true);
+    });
+
+    els.submitBtn.addEventListener("click", () => {
+      submitAnswer("submit");
+    });
+
+    els.nextBtn.addEventListener("click", nextStep);
+
+    els.skipBtn.addEventListener("click", () => {
+      submitAnswer("skip");
+    });
+
+    els.markBtn.addEventListener("click", () => {
+      const id = app.question.item.id;
+      appendItemStat(id, (s) => { s.marked += 1; });
+      appendHistory(id, (h) => { h.marked += 1; });
+      saveHistory();
+      els.feedback.className = "feedback bad";
+      els.feedback.textContent = "已标记“不会”，后续会提高该知识点出现频率。";
+    });
+
+    els.againBtn.addEventListener("click", () => {
+      readSettings();
+      beginSession(false);
+    });
+
+    els.wrongAgainBtn.addEventListener("click", () => {
+      readSettings();
+      beginSession(true);
+    });
+
+    els.resetHistoryBtn.addEventListener("click", () => {
+      if (!confirm("确认清空历史统计吗？")) return;
+      app.history = {};
+      saveHistory();
+      alert("已清空。");
+    });
+
+    els.answerInput.addEventListener("keydown", (evt) => {
+      if (evt.key === "Enter" && !els.submitBtn.disabled) {
+        submitAnswer("submit");
+      }
+    });
+
+    // 初始化错题池按钮状态
+    els.retryWrongBtn.disabled = app.wrongPool.length === 0;
+  </script>
+</body>
+</html>
