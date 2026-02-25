@@ -16,11 +16,27 @@
       font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     }
     body {
+      position: relative;
+      overflow: hidden;
       display: grid;
       place-items: center;
       background: linear-gradient(rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0.32)), url("./SEAS.jpg") center/cover no-repeat fixed;
     }
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(30deg, transparent 17%, rgba(255, 255, 255, 0.22) 17.2%, rgba(255, 255, 255, 0.22) 17.5%, transparent 17.8%),
+        linear-gradient(30deg, transparent 42%, rgba(255, 255, 255, 0.12) 42.2%, rgba(255, 255, 255, 0.12) 42.45%, transparent 42.7%),
+        linear-gradient(30deg, transparent 69%, rgba(255, 255, 255, 0.18) 69.2%, rgba(255, 255, 255, 0.18) 69.45%, transparent 69.7%),
+        linear-gradient(30deg, transparent 87%, rgba(255, 255, 255, 0.1) 87.15%, rgba(255, 255, 255, 0.1) 87.35%, transparent 87.6%);
+    }
     .wrap {
+      position: relative;
+      z-index: 1;
       text-align: center;
       padding: 20px;
       width: min(92vw, 980px);
@@ -43,6 +59,15 @@
       letter-spacing: 0.02em;
       text-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
     }
+    .quote-en {
+      margin: 10px 0 0;
+      font-size: clamp(16px, 2.2vw, 30px);
+      line-height: 1.4;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: rgba(255, 255, 255, 0.94);
+      text-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    }
     a {
       display: inline-block;
       color: #fff;
@@ -62,6 +87,7 @@
 <body>
   <div class="wrap">
     <p class="quote">达人撒手悬崖，志士俯首尘埃。</p>
+    <p class="quote-en">Wisdom in retreat, strength in humility.</p>
     <div class="links">
       <a href="./chem-valence-drill.html">进入化合价训练</a>
       <a href="./chem-valence-game.html">进入化合价闯关</a>
