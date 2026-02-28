@@ -3,30 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>英语词汇星域 · Grade 8 Arcade</title>
+  <title>英语词汇射击场 · Grade 8</title>
   <style>
     :root {
-      --bg-0: #060913;
-      --bg-1: #0b1530;
-      --bg-2: #152a55;
-      --line: rgba(146, 181, 255, 0.28);
-      --text: #ecf4ff;
-      --muted: #a6bbde;
-      --card: rgba(12, 20, 43, 0.74);
-      --card-strong: rgba(17, 30, 62, 0.88);
-      --glow-cyan: #41e8ff;
-      --glow-purple: #b08bff;
-      --glow-pink: #ff5ebf;
-      --good: #3be68a;
-      --bad: #ff667a;
-      --warn: #ffd36a;
-      --shadow: 0 14px 44px rgba(3, 8, 23, 0.52);
-      --radius: 18px;
+      --bg-a: #060a16;
+      --bg-b: #101f45;
+      --bg-c: #182f64;
+      --text: #eaf2ff;
+      --muted: #9fb3d7;
+      --line: rgba(149, 182, 255, 0.32);
+      --panel: rgba(10, 18, 42, 0.74);
+      --panel-strong: rgba(12, 22, 49, 0.9);
+      --cyan: #40e6ff;
+      --pink: #ff6dc6;
+      --violet: #9f8dff;
+      --gold: #ffd667;
+      --good: #48e890;
+      --bad: #ff6d87;
+      --shadow: 0 16px 42px rgba(3, 8, 22, 0.56);
+      --r: 16px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -34,586 +32,369 @@
       color: var(--text);
       font-family: "STKaiti", "Kaiti SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       background:
-        radial-gradient(circle at 12% 10%, rgba(65, 232, 255, 0.2), transparent 27%),
-        radial-gradient(circle at 86% 12%, rgba(176, 139, 255, 0.2), transparent 26%),
-        radial-gradient(circle at 55% 82%, rgba(255, 94, 191, 0.16), transparent 30%),
-        linear-gradient(140deg, var(--bg-0), var(--bg-1) 52%, var(--bg-2));
-      padding: 16px;
+        radial-gradient(circle at 10% 12%, rgba(64, 230, 255, 0.2), transparent 28%),
+        radial-gradient(circle at 86% 14%, rgba(159, 141, 255, 0.19), transparent 27%),
+        radial-gradient(circle at 58% 84%, rgba(255, 109, 198, 0.16), transparent 34%),
+        linear-gradient(145deg, var(--bg-a), var(--bg-b) 52%, var(--bg-c));
+      padding: 14px;
       overflow-x: hidden;
     }
 
-    body::before,
-    body::after {
+    body::before {
       content: "";
       position: fixed;
-      inset: -30vh -20vw;
-      pointer-events: none;
+      inset: -40vh -20vw;
       z-index: -2;
+      pointer-events: none;
       background:
-        repeating-linear-gradient(128deg,
+        repeating-linear-gradient(130deg,
           transparent 0,
-          transparent 22px,
-          rgba(144, 188, 255, 0.028) 22px,
-          rgba(144, 188, 255, 0.028) 23px);
-      animation: drift 22s linear infinite;
-    }
-
-    body::after {
-      opacity: 0.5;
-      transform: scale(1.08);
-      filter: blur(1px);
-      animation-duration: 30s;
-      animation-direction: reverse;
+          transparent 24px,
+          rgba(150, 192, 255, 0.03) 24px,
+          rgba(150, 192, 255, 0.03) 25px);
+      animation: drift 24s linear infinite;
     }
 
     @keyframes drift {
       from { transform: translate3d(0, 0, 0); }
-      to { transform: translate3d(-80px, -80px, 0); }
+      to { transform: translate3d(-84px, -84px, 0); }
     }
 
     .app {
-      max-width: 1260px;
+      max-width: 1240px;
       margin: 0 auto;
       display: grid;
-      gap: 14px;
+      gap: 12px;
     }
 
     .panel {
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--card);
+      border-radius: var(--r);
+      background: var(--panel);
       box-shadow: var(--shadow);
       backdrop-filter: blur(8px);
     }
 
     .hero {
-      padding: 16px 18px;
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap;
       position: relative;
       overflow: hidden;
+      padding: 15px 16px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
     }
 
     .hero::before {
       content: "";
       position: absolute;
-      inset: -40% -20%;
+      inset: -50% -30%;
       background:
         conic-gradient(from 0deg,
-          rgba(65, 232, 255, 0.16),
-          rgba(176, 139, 255, 0.1),
-          rgba(255, 94, 191, 0.14),
-          rgba(65, 232, 255, 0.16));
+          rgba(64, 230, 255, 0.14),
+          rgba(159, 141, 255, 0.1),
+          rgba(255, 109, 198, 0.14),
+          rgba(64, 230, 255, 0.14));
+      filter: blur(26px);
       animation: spin 18s linear infinite;
-      filter: blur(24px);
       z-index: 0;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .hero-main,
-    .hero-side {
-      position: relative;
-      z-index: 1;
-    }
+    .hero-tags { position: relative; z-index: 1; }
 
     .hero h1 {
       margin: 0;
-      font-size: clamp(1.25rem, 2.5vw, 2rem);
+      font-size: clamp(1.2rem, 2.4vw, 1.95rem);
       letter-spacing: 0.04em;
-      text-shadow: 0 4px 18px rgba(10, 21, 50, 0.56);
     }
 
     .hero p {
-      margin: 7px 0 0;
+      margin: 6px 0 0;
       color: var(--muted);
-      font-size: 0.92rem;
+      font-size: 0.9rem;
     }
 
-    .pill-row {
+    .tags {
       display: flex;
-      gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      gap: 8px;
     }
 
-    .pill {
-      border: 1px solid rgba(65, 232, 255, 0.52);
-      background: rgba(65, 232, 255, 0.12);
-      color: var(--glow-cyan);
-      padding: 6px 11px;
+    .tag {
+      border: 1px solid rgba(64, 230, 255, 0.5);
       border-radius: 999px;
-      font-size: 0.83rem;
+      padding: 5px 10px;
+      color: var(--cyan);
+      background: rgba(64, 230, 255, 0.12);
+      font-size: 0.82rem;
       font-weight: 700;
-      letter-spacing: 0.03em;
     }
 
-    .dashboard {
+    .toolbar {
       padding: 12px;
       display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .unit-chip,
+    .btn,
+    .select {
+      border-radius: 11px;
+      border: 1px solid transparent;
+      background: rgba(14, 27, 57, 0.9);
+      color: var(--text);
+      font: inherit;
+      padding: 8px 10px;
+    }
+
+    .unit-chip,
+    .btn {
+      cursor: pointer;
+      transition: transform 0.13s ease, border-color 0.13s ease, box-shadow 0.13s ease;
+    }
+
+    .unit-chip:hover,
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(131, 168, 255, 0.6);
+      box-shadow: 0 8px 16px rgba(4, 11, 30, 0.4);
+    }
+
+    .unit-chip.active {
+      border-color: rgba(255, 214, 103, 0.9);
+      background: rgba(89, 68, 21, 0.52);
+      color: #ffeab2;
+      box-shadow: 0 0 0 1px rgba(255, 214, 103, 0.55) inset;
+    }
+
+    .btn-primary {
+      border: none;
+      color: #07111f;
+      font-weight: 800;
+      background: linear-gradient(135deg, #35e2ff, #8d95ff 50%, #ff6dc6);
+    }
+
+    .btn-secondary {
+      border-color: rgba(130, 165, 255, 0.4);
+      background: rgba(13, 25, 52, 0.84);
+      color: #ddedff;
+    }
+
+    .btn-danger {
+      border-color: rgba(255, 109, 135, 0.58);
+      background: rgba(88, 22, 38, 0.56);
+      color: #ffc8d3;
+    }
+
+    .select {
+      border-color: rgba(131, 166, 255, 0.45);
+      min-width: 120px;
+    }
+
+    .hint {
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .hud {
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
       gap: 8px;
     }
 
     .metric {
-      border-radius: 12px;
-      border: 1px solid rgba(146, 181, 255, 0.26);
-      background: rgba(11, 24, 52, 0.75);
-      padding: 8px 10px;
-      min-height: 70px;
+      border: 1px solid rgba(131, 166, 255, 0.3);
+      background: rgba(11, 21, 46, 0.86);
+      border-radius: 11px;
+      min-height: 62px;
+      padding: 8px;
     }
 
     .metric span {
-      display: block;
-      font-size: 0.76rem;
       color: var(--muted);
+      font-size: 0.76rem;
+      display: block;
     }
 
     .metric strong {
-      display: block;
       margin-top: 4px;
-      font-size: 1.03rem;
-      font-family: "Futura", "Trebuchet MS", sans-serif;
-      letter-spacing: 0.03em;
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: 340px minmax(0, 1fr);
-      gap: 12px;
-      align-items: start;
-    }
-
-    .panel-title {
-      margin: 0 0 10px;
-      font-size: 1rem;
-      letter-spacing: 0.04em;
-      color: #dff0ff;
-    }
-
-    .control {
-      padding: 14px;
-      display: grid;
-      gap: 14px;
-    }
-
-    .unit-grid,
-    .mode-grid {
-      display: grid;
-      gap: 8px;
-    }
-
-    .unit-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .mode-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .chip,
-    .mode-card,
-    .btn {
-      border: 1px solid transparent;
-      background: rgba(17, 31, 64, 0.88);
-      color: var(--text);
-      border-radius: 12px;
-      padding: 9px 10px;
-      cursor: pointer;
-      font: inherit;
-      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .chip:hover,
-    .mode-card:hover,
-    .btn:hover {
-      transform: translateY(-1px);
-      border-color: rgba(129, 167, 255, 0.54);
-      box-shadow: 0 10px 18px rgba(5, 11, 29, 0.42);
-    }
-
-    .chip.active {
-      border-color: rgba(65, 232, 255, 0.78);
-      background: rgba(46, 106, 157, 0.34);
-      box-shadow: 0 0 0 1px rgba(65, 232, 255, 0.5) inset;
-    }
-
-    .mode-card {
-      text-align: left;
-      border-color: rgba(146, 181, 255, 0.3);
-      background: linear-gradient(145deg, rgba(20, 34, 68, 0.94), rgba(11, 24, 50, 0.9));
-    }
-
-    .mode-card strong {
       display: block;
-      font-size: 0.96rem;
-      letter-spacing: 0.02em;
+      font-size: 1.04rem;
+      letter-spacing: 0.03em;
+      font-family: "Futura", "Trebuchet MS", sans-serif;
     }
 
-    .mode-card small {
+    .game-shell {
+      padding: 10px;
+      position: relative;
+    }
+
+    .game-wrap {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(129, 165, 255, 0.45);
+      background: linear-gradient(160deg, rgba(8, 16, 36, 0.9), rgba(12, 24, 51, 0.9));
+    }
+
+    #gameCanvas {
+      width: 100%;
+      height: clamp(420px, 62vh, 640px);
+      display: block;
+      touch-action: none;
+    }
+
+    .prompt {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: 12px;
+      border: 1px solid rgba(129, 166, 255, 0.45);
+      border-radius: 12px;
+      background: rgba(9, 18, 41, 0.78);
+      backdrop-filter: blur(5px);
+      padding: 10px 12px;
+      pointer-events: none;
+    }
+
+    .prompt b {
+      color: #cfe5ff;
+      display: block;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .prompt strong {
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(1.05rem, 2.2vw, 1.45rem);
+      line-height: 1.35;
+      color: #f3f8ff;
+      text-shadow: 0 3px 12px rgba(7, 14, 33, 0.58);
+    }
+
+    .prompt small {
       display: block;
       margin-top: 5px;
       color: var(--muted);
-      font-size: 0.8rem;
-      line-height: 1.35;
-    }
-
-    .mode-card.active {
-      border-color: rgba(255, 211, 106, 0.88);
-      box-shadow: 0 0 0 1px rgba(255, 211, 106, 0.45) inset;
-      background: linear-gradient(145deg, rgba(53, 43, 19, 0.88), rgba(27, 23, 44, 0.9));
-    }
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #2de4ff, #7c8cff 52%, #f867de);
-      color: #050914;
-      border: none;
-      font-weight: 800;
-      letter-spacing: 0.03em;
-    }
-
-    .btn-light {
-      border-color: rgba(130, 165, 255, 0.35);
-      background: rgba(16, 29, 57, 0.84);
-      color: #dfeaff;
-    }
-
-    .btn-danger {
-      border-color: rgba(255, 102, 122, 0.58);
-      background: rgba(84, 20, 34, 0.58);
-      color: #ffb9c3;
-    }
-
-    .hint {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
-    .arena {
-      padding: 14px;
-      min-height: 560px;
-    }
-
-    .arena-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-
-    .arena-title {
-      margin: 0;
-      font-size: 1.08rem;
-      letter-spacing: 0.03em;
-    }
-
-    .arena-sub {
-      margin: 3px 0 0;
-      color: var(--muted);
-      font-size: 0.86rem;
-    }
-
-    .bar {
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(117, 146, 209, 0.28);
-      overflow: hidden;
-      border: 1px solid rgba(117, 146, 209, 0.38);
-    }
-
-    .bar > i {
-      display: block;
-      height: 100%;
-      width: 0;
-      transition: width 0.18s linear;
-      background: linear-gradient(90deg, #2de4ff, #87a7ff, #f867de);
-    }
-
-    .question-card {
-      margin-top: 10px;
-      border: 1px solid rgba(131, 164, 255, 0.34);
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(13, 27, 57, 0.9), rgba(17, 35, 76, 0.72));
-      padding: 14px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .question-card::after {
-      content: "";
-      position: absolute;
-      top: -48%;
-      left: -12%;
-      width: 60%;
-      height: 200%;
-      transform: rotate(20deg);
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-      pointer-events: none;
-      animation: sweep 4s linear infinite;
-    }
-
-    @keyframes sweep {
-      to { transform: translateX(240%) rotate(20deg); }
-    }
-
-    .question-type {
-      font-size: 0.76rem;
-      color: #9ac2ff;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .question-main {
-      margin: 0;
-      font-size: clamp(1.35rem, 2.5vw, 2rem);
-      line-height: 1.3;
-      text-shadow: 0 4px 14px rgba(6, 14, 35, 0.6);
-      position: relative;
-      z-index: 1;
-    }
-
-    .question-sub {
-      margin: 7px 0 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .option-grid {
-      margin-top: 12px;
-      display: grid;
-      gap: 8px;
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .option {
-      border-radius: 12px;
-      border: 1px solid rgba(140, 173, 255, 0.38);
-      background: rgba(13, 26, 53, 0.9);
-      color: var(--text);
-      padding: 10px;
-      text-align: left;
-      cursor: pointer;
-      transition: transform 0.12s ease, border-color 0.12s ease;
-    }
-
-    .option:hover {
-      transform: translateY(-1px);
-      border-color: rgba(65, 232, 255, 0.72);
-    }
-
-    .option.ok {
-      border-color: rgba(59, 230, 138, 0.84);
-      background: rgba(19, 70, 51, 0.72);
-    }
-
-    .option.bad {
-      border-color: rgba(255, 102, 122, 0.84);
-      background: rgba(79, 24, 40, 0.72);
-    }
-
-    .battle-row {
-      margin-top: 14px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .battle-card {
-      border: 1px solid rgba(130, 164, 255, 0.33);
-      border-radius: 12px;
-      background: rgba(12, 24, 50, 0.8);
-      padding: 10px;
-    }
-
-    .battle-card h4 {
-      margin: 0 0 8px;
-      font-size: 0.88rem;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .hp {
-      margin-top: 6px;
-      font-size: 1.04rem;
-      letter-spacing: 0.06em;
-      color: #ffc6d6;
-    }
-
-    .input {
-      width: 100%;
-      border: 1px solid rgba(132, 165, 255, 0.5);
-      border-radius: 12px;
-      padding: 11px 12px;
-      background: rgba(9, 18, 40, 0.88);
-      color: var(--text);
-      font: inherit;
-      font-size: 1rem;
-      margin-top: 10px;
-    }
-
-    .input:focus {
-      outline: 2px solid rgba(65, 232, 255, 0.52);
-      outline-offset: 1px;
-    }
-
-    .feedback {
-      margin-top: 10px;
-      min-height: 24px;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .feedback.good { color: var(--good); }
-    .feedback.bad { color: var(--bad); }
-
-    .memory-grid {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .memory-card {
-      height: 84px;
-      border-radius: 12px;
-      border: 1px solid rgba(127, 160, 255, 0.42);
-      background: linear-gradient(145deg, rgba(16, 30, 58, 0.94), rgba(10, 20, 41, 0.94));
-      color: transparent;
-      display: grid;
-      place-items: center;
-      padding: 8px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 0.92rem;
-      transition: transform 0.12s ease, border-color 0.12s ease, color 0.12s ease;
-      user-select: none;
-    }
-
-    .memory-card.revealed {
-      color: var(--text);
-      border-color: rgba(65, 232, 255, 0.72);
-      background: linear-gradient(145deg, rgba(23, 42, 81, 0.94), rgba(16, 31, 62, 0.94));
-      transform: translateY(-1px);
-    }
-
-    .memory-card.matched {
-      color: #07111f;
-      border-color: rgba(59, 230, 138, 0.95);
-      background: linear-gradient(145deg, rgba(59, 230, 138, 0.9), rgba(117, 238, 187, 0.84));
-      font-weight: 700;
-      cursor: default;
-    }
-
-    .log {
-      margin-top: 12px;
-      border: 1px solid rgba(129, 162, 246, 0.34);
-      border-radius: 12px;
-      background: rgba(9, 17, 38, 0.76);
-      padding: 10px;
-      min-height: 88px;
-      max-height: 164px;
-      overflow: auto;
       font-size: 0.83rem;
-      line-height: 1.46;
-      color: var(--muted);
     }
 
-    .log b { color: #dcedff; }
+    .message {
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(9, 18, 41, 0.82);
+      border: 1px solid rgba(131, 166, 255, 0.35);
+      padding: 6px 12px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      max-width: calc(100% - 18px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-    .word-book {
+    .message.good { color: var(--good); border-color: rgba(72, 232, 144, 0.55); }
+    .message.bad { color: var(--bad); border-color: rgba(255, 109, 135, 0.6); }
+
+    .touch-bar {
+      margin-top: 8px;
+      display: none;
+      gap: 8px;
+      grid-template-columns: 1fr 1fr 1.2fr;
+    }
+
+    .touch-btn {
+      border-radius: 11px;
+      border: 1px solid rgba(130, 165, 255, 0.42);
+      background: rgba(13, 25, 52, 0.9);
+      color: #e7f1ff;
+      padding: 12px;
+      font: inherit;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .touch-btn.fire {
+      border-color: rgba(255, 214, 103, 0.6);
+      background: rgba(86, 67, 21, 0.62);
+      color: #ffe6a4;
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 10px;
+    }
+
+    .sub-panel {
       padding: 12px;
     }
 
-    .word-book-grid {
-      margin-top: 10px;
+    .sub-panel h3 {
+      margin: 0 0 8px;
+      font-size: 0.98rem;
+      letter-spacing: 0.04em;
+    }
+
+    .weak-list {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
+      max-height: 230px;
+      overflow: auto;
     }
 
-    .word-tag {
+    .weak-item {
       border-radius: 10px;
-      border: 1px solid rgba(130, 162, 246, 0.3);
-      background: rgba(11, 20, 44, 0.76);
+      border: 1px solid rgba(129, 165, 255, 0.35);
+      background: rgba(10, 19, 42, 0.8);
       padding: 7px 8px;
-      font-size: 0.8rem;
+      font-size: 0.83rem;
+      line-height: 1.45;
     }
 
-    .word-tag small {
+    .weak-item small {
+      color: var(--muted);
+      font-size: 0.75rem;
       display: block;
       margin-top: 2px;
+    }
+
+    .rules {
+      font-size: 0.84rem;
+      line-height: 1.6;
       color: var(--muted);
-      font-size: 0.72rem;
     }
 
-    .spark {
-      position: fixed;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #fff;
-      pointer-events: none;
-      z-index: 20;
-      box-shadow: 0 0 14px #fff;
-      animation: spark 720ms ease-out forwards;
+    .rules b { color: #dbe9ff; }
+
+    @media (max-width: 1020px) {
+      .hud { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .bottom { grid-template-columns: 1fr; }
     }
 
-    @keyframes spark {
-      from {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-      to {
-        opacity: 0;
-        transform: translateY(-42px) scale(0.3);
-      }
-    }
-
-    @media (max-width: 1050px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .dashboard {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 720px) {
-      body { padding: 10px; }
-      .option-grid,
-      .battle-row {
-        grid-template-columns: 1fr;
-      }
-      .memory-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-      .word-book-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .dashboard {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .unit-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    @media (max-width: 760px) {
+      body { padding: 8px; }
+      .hud { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .touch-bar { display: grid; }
+      .hero h1 { letter-spacing: 0.02em; }
     }
   </style>
 </head>
@@ -621,85 +402,70 @@
   <div class="app">
     <section class="panel hero">
       <div class="hero-main">
-        <h1>英语词汇星域 · Grade 8 Memory Arcade</h1>
-        <p>上海初二词汇强化系统：娱乐闯关 + 记忆复习 + 即时反馈。覆盖 Unit 1-6 核心词与短语。</p>
+        <h1>英语词汇射击场 · Grade 8</h1>
+        <p>目标：根据中文释义，射击正确英文词。越快越准，连击越高，记忆越牢。</p>
       </div>
-      <div class="hero-side">
-        <div class="pill-row">
-          <span class="pill">炫光闯关</span>
-          <span class="pill">错词回放</span>
-          <span class="pill">BOSS拼写战</span>
+      <div class="hero-tags">
+        <div class="tags">
+          <span class="tag">词汇射击</span>
+          <span class="tag">错词优先复习</span>
+          <span class="tag">炫光反馈</span>
         </div>
       </div>
     </section>
 
-    <section class="panel dashboard" id="dashboard"></section>
+    <section class="panel toolbar">
+      <div class="row" id="unitRow"></div>
+      <div class="row">
+        <select class="select" id="difficultySel">
+          <option value="easy">难度：Easy</option>
+          <option value="normal" selected>难度：Normal</option>
+          <option value="hard">难度：Hard</option>
+        </select>
+        <button class="btn btn-primary" id="startBtn">开始战斗</button>
+        <button class="btn btn-secondary" id="pauseBtn">暂停</button>
+        <button class="btn btn-danger" id="resetBtn">重置进度</button>
+      </div>
+      <div class="hint" id="hint">键盘：A/D 或 ←/→ 移动，空格发射。移动端可用下方按钮。</div>
+    </section>
 
-    <div class="main-grid">
-      <section class="panel control">
-        <div>
-          <h3 class="panel-title">选择词汇单元</h3>
-          <div class="unit-grid" id="unitGrid"></div>
+    <section class="panel hud" id="hud"></section>
+
+    <section class="panel game-shell">
+      <div class="game-wrap">
+        <canvas id="gameCanvas"></canvas>
+        <div class="prompt">
+          <b id="promptType">READY</b>
+          <strong id="promptMain">点击“开始战斗”</strong>
+          <small id="promptSub">系统会按记忆曲线抽词，错词会更频繁出现。</small>
         </div>
+        <div class="message" id="message"></div>
+      </div>
+      <div class="touch-bar">
+        <button class="touch-btn" id="touchLeft">左移</button>
+        <button class="touch-btn" id="touchRight">右移</button>
+        <button class="touch-btn fire" id="touchFire">发射</button>
+      </div>
+    </section>
 
-        <div>
-          <h3 class="panel-title">玩法模式</h3>
-          <div class="mode-grid" id="modeGrid"></div>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn btn-primary" id="startBtn">开始本轮</button>
-          <button class="btn btn-light" id="nextBtn">下一题</button>
-          <button class="btn btn-danger" id="resetBtn">重置进度</button>
-        </div>
-
-        <div class="hint" id="modeHint"></div>
+    <div class="bottom">
+      <section class="panel sub-panel">
+        <h3>错词雷达</h3>
+        <div class="weak-list" id="weakList"></div>
       </section>
-
-      <section class="panel arena">
-        <div class="arena-head">
-          <div>
-            <h3 class="arena-title" id="arenaTitle">准备进入英语词汇星域</h3>
-            <p class="arena-sub" id="arenaSub">先选 Unit 和模式，再开始本轮训练。</p>
-          </div>
-          <div style="min-width: 220px; width: min(280px, 46vw);">
-            <div class="bar"><i id="progressBar"></i></div>
-          </div>
+      <section class="panel sub-panel">
+        <h3>玩法说明</h3>
+        <div class="rules">
+          <div><b>1.</b> 顶部提示给出中文释义，你要射击对应的英文目标。</div>
+          <div><b>2.</b> 打中正确词：得分 + XP + 连击；打错或漏掉：掉血并进入错词队列。</div>
+          <div><b>3.</b> 每局 20 题，血量归零或题目结束时结算。</div>
+          <div><b>4.</b> 系统使用本地记忆模型：你越容易错的词，会更频繁出现。</div>
         </div>
-        <div id="arenaBody"></div>
-        <div class="feedback" id="feedback"></div>
-        <div class="log" id="log"></div>
       </section>
     </div>
-
-    <section class="panel word-book">
-      <h3 class="panel-title">易错词回放（优先复习）</h3>
-      <div class="word-book-grid" id="weakWords"></div>
-    </section>
   </div>
 
   <script>
-    const MODES = [
-      {
-        id: "rush",
-        name: "闪电四选一",
-        desc: "限时四选一，连击越高分越高。快速建立词义反射。",
-        hint: "每题 12 秒，答错会打断连击。适合热身与提速。"
-      },
-      {
-        id: "memory",
-        name: "记忆翻牌局",
-        desc: "英汉配对翻牌，强制回忆并纠正模糊记忆。",
-        hint: "一次翻两张，配对成功会提升记忆盒等级。"
-      },
-      {
-        id: "boss",
-        name: "BOSS 拼写战",
-        desc: "根据中文释义拼写英文，击穿 BOSS 血条。",
-        hint: "偏重精确拼写。错误会掉心，连续命中有暴击伤害。"
-      }
-    ];
-
     const WORDS = [
       { unit: 1, en: "self-expression", zh: "自我表达" },
       { unit: 1, en: "creativity", zh: "创造力" },
@@ -717,7 +483,7 @@
       { unit: 1, en: "landscape", zh: "风景" },
       { unit: 1, en: "master", zh: "大师；能手" },
       { unit: 1, en: "dynasty", zh: "朝代" },
-      { unit: 1, en: "paint", zh: "绘画；颜料" },
+      { unit: 1, en: "paint", zh: "绘画" },
       { unit: 1, en: "harmony", zh: "和谐" },
       { unit: 1, en: "path", zh: "小道" },
       { unit: 1, en: "ahead", zh: "在前方" },
@@ -732,17 +498,13 @@
 
       { unit: 2, en: "discovery", zh: "发现" },
       { unit: 2, en: "ancient", zh: "古代的" },
-      { unit: 2, en: "BCE", zh: "公元前" },
-      { unit: 2, en: "CE", zh: "公元" },
       { unit: 2, en: "exploration", zh: "探索；勘查" },
       { unit: 2, en: "wheel", zh: "轮子" },
       { unit: 2, en: "economy", zh: "经济" },
       { unit: 2, en: "material", zh: "材料；原料" },
-      { unit: 2, en: "fishnet", zh: "渔网" },
       { unit: 2, en: "war", zh: "战争" },
       { unit: 2, en: "excite", zh: "使兴奋" },
       { unit: 2, en: "illness", zh: "疾病" },
-      { unit: 2, en: "socialism", zh: "社会主义" },
       { unit: 2, en: "habit", zh: "习惯" },
       { unit: 2, en: "hardly", zh: "几乎不" },
       { unit: 2, en: "totally", zh: "完全地" },
@@ -754,44 +516,34 @@
       { unit: 2, en: "sir", zh: "先生；爵士" },
       { unit: 2, en: "by accident", zh: "偶然；意外地" },
       { unit: 2, en: "mould", zh: "霉菌" },
-      { unit: 2, en: "to one's surprise", zh: "令某人惊讶的是" },
       { unit: 2, en: "bacteria", zh: "细菌" },
       { unit: 2, en: "turn ... into", zh: "使...变成" },
       { unit: 2, en: "life-saving", zh: "救命的" },
       { unit: 2, en: "course", zh: "课程；进程" },
       { unit: 2, en: "treat", zh: "医治" },
       { unit: 2, en: "serious", zh: "严重的" },
-      { unit: 2, en: "malaria", zh: "疟疾" },
       { unit: 2, en: "medical", zh: "医学的；医疗的" },
-      { unit: 2, en: "light up", zh: "点亮；使变亮" },
       { unit: 2, en: "volunteer", zh: "志愿做；志愿者" },
-      { unit: 2, en: "herself", zh: "她自己" },
       { unit: 2, en: "keep in touch", zh: "保持联系" },
-      { unit: 2, en: "spare", zh: "空闲的" },
       { unit: 2, en: "independent", zh: "独立的" },
       { unit: 2, en: "responsible", zh: "负责的" },
-      { unit: 2, en: "mess", zh: "使不整洁；混乱" },
-      { unit: 2, en: "mess up", zh: "弄糟" },
       { unit: 2, en: "responsibility", zh: "责任" },
-      { unit: 2, en: "value", zh: "价值；用途" },
+      { unit: 2, en: "value", zh: "价值" },
       { unit: 2, en: "account", zh: "账户" },
       { unit: 2, en: "bank", zh: "银行" },
-      { unit: 2, en: "economics", zh: "经济学" },
-      { unit: 2, en: "whatever", zh: "任何事物；无论什么" },
+      { unit: 2, en: "whatever", zh: "无论什么" },
       { unit: 2, en: "economist", zh: "经济学家" },
       { unit: 2, en: "society", zh: "社会" },
       { unit: 2, en: "trade", zh: "贸易；交易" },
       { unit: 2, en: "exchange", zh: "交换" },
       { unit: 2, en: "goods", zh: "商品；货品" },
       { unit: 2, en: "sample", zh: "样品" },
-      { unit: 2, en: "saying", zh: "谚语；格言" },
       { unit: 2, en: "cost", zh: "成本；花费" },
       { unit: 2, en: "even if", zh: "即使" },
       { unit: 2, en: "might", zh: "可能；可以" },
       { unit: 2, en: "complete", zh: "完整的；完成" },
       { unit: 2, en: "completely", zh: "完全地" },
       { unit: 2, en: "valuable", zh: "有价值的；宝贵的" },
-      { unit: 2, en: "pie", zh: "馅饼" },
       { unit: 2, en: "pie chart", zh: "饼形图" },
       { unit: 2, en: "percentage", zh: "百分率" },
 
@@ -799,7 +551,6 @@
       { unit: 3, en: "sale", zh: "出售；销售" },
       { unit: 3, en: "payment", zh: "支付；付款" },
       { unit: 3, en: "cash", zh: "现金" },
-      { unit: 3, en: "honey", zh: "亲爱的；蜂蜜" },
       { unit: 3, en: "assistant", zh: "店员；助手" },
       { unit: 3, en: "deal", zh: "交易；协议" },
       { unit: 3, en: "bill", zh: "账单" },
@@ -826,7 +577,6 @@
       { unit: 4, en: "narrow", zh: "狭窄的" },
       { unit: 4, en: "baggy", zh: "宽松的" },
       { unit: 4, en: "advertising", zh: "广告业；广告活动" },
-      { unit: 4, en: "a great deal of", zh: "很多；大量" },
       { unit: 4, en: "advertisement", zh: "广告" },
       { unit: 4, en: "image", zh: "形象；印象" },
       { unit: 4, en: "influencer", zh: "有影响力的人" },
@@ -849,8 +599,6 @@
       { unit: 5, en: "injure", zh: "使受伤" },
       { unit: 5, en: "effect", zh: "影响；作用" },
       { unit: 5, en: "dollar", zh: "元（美元等）" },
-      { unit: 5, en: "Rd.", zh: "路（road）" },
-      { unit: 5, en: "Dr.", zh: "博士；医生（doctor）" },
       { unit: 5, en: "exam", zh: "考试" },
       { unit: 5, en: "typhoon", zh: "台风" },
       { unit: 5, en: "battery", zh: "电池" },
@@ -873,7 +621,7 @@
       { unit: 5, en: "rapidly", zh: "迅速地" },
 
       { unit: 6, en: "towards", zh: "朝；向" },
-      { unit: 6, en: "nothing", zh: "没什么；无关紧要的事" },
+      { unit: 6, en: "nothing", zh: "没什么" },
       { unit: 6, en: "whether", zh: "是否" },
       { unit: 6, en: "get away", zh: "离开；逃离" },
       { unit: 6, en: "hotel", zh: "旅馆" },
@@ -886,7 +634,7 @@
       { unit: 6, en: "coast", zh: "海岸" },
       { unit: 6, en: "rise", zh: "上升；升高" },
       { unit: 6, en: "injured", zh: "受伤的" },
-      { unit: 6, en: "rescue", zh: "营救；营救行动" },
+      { unit: 6, en: "rescue", zh: "营救；救援" },
       { unit: 6, en: "tent", zh: "帐篷" },
       { unit: 6, en: "confused", zh: "困惑的" },
       { unit: 6, en: "tool", zh: "工具" },
@@ -897,7 +645,6 @@
       { unit: 6, en: "dead", zh: "死的；枯萎的" },
       { unit: 6, en: "cheerleader", zh: "拉拉队队员" },
       { unit: 6, en: "yourself", zh: "你自己" },
-      { unit: 6, en: "hers", zh: "她的（名词性）" },
       { unit: 6, en: "whenever", zh: "无论何时" },
       { unit: 6, en: "be mean to sb", zh: "对某人刻薄" },
       { unit: 6, en: "stare", zh: "盯着看" },
@@ -921,57 +668,80 @@
       { unit: 6, en: "caring", zh: "关心他人的；体贴的" },
       { unit: 6, en: "doubtful", zh: "怀疑的；不确定的" },
       { unit: 6, en: "firm", zh: "坚定的；坚决的" }
-    ].map((w, idx) => ({ ...w, id: `u${w.unit}-${idx}-${w.en.toLowerCase()}` }));
+    ].map((w, i) => ({ ...w, id: `${w.unit}-${i}-${w.en.toLowerCase()}` }));
 
-    const STORAGE_KEY = "eng_vocab_arcade_v1";
+    const STORE_KEY = "english_shooter_progress_v1";
 
-    const state = {
-      unit: 1,
-      mode: "rush",
-      running: false,
-      roundSize: 12,
-      index: 0,
-      combo: 0,
-      qList: [],
-      timer: null,
-      timeLeft: 12,
-      memory: null,
-      boss: null,
-      current: null,
-      locked: false,
-      progress: loadProgress()
+    const DIFF = {
+      easy: { speed: 36, drift: 12, fireCd: 210, time: 16, options: 5, bonus: 1 },
+      normal: { speed: 52, drift: 16, fireCd: 170, time: 13, options: 5, bonus: 2 },
+      hard: { speed: 68, drift: 20, fireCd: 140, time: 10, options: 6, bonus: 4 }
     };
 
-    const modeHintEl = document.getElementById("modeHint");
-    const unitGridEl = document.getElementById("unitGrid");
-    const modeGridEl = document.getElementById("modeGrid");
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const unitRow = document.getElementById("unitRow");
+    const difficultySel = document.getElementById("difficultySel");
     const startBtn = document.getElementById("startBtn");
-    const nextBtn = document.getElementById("nextBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
     const resetBtn = document.getElementById("resetBtn");
-    const dashboardEl = document.getElementById("dashboard");
-    const arenaTitleEl = document.getElementById("arenaTitle");
-    const arenaSubEl = document.getElementById("arenaSub");
-    const arenaBodyEl = document.getElementById("arenaBody");
-    const feedbackEl = document.getElementById("feedback");
-    const logEl = document.getElementById("log");
-    const progressBarEl = document.getElementById("progressBar");
-    const weakWordsEl = document.getElementById("weakWords");
+    const hint = document.getElementById("hint");
+    const hud = document.getElementById("hud");
+    const promptType = document.getElementById("promptType");
+    const promptMain = document.getElementById("promptMain");
+    const promptSub = document.getElementById("promptSub");
+    const messageEl = document.getElementById("message");
+    const weakList = document.getElementById("weakList");
+
+    const touchLeft = document.getElementById("touchLeft");
+    const touchRight = document.getElementById("touchRight");
+    const touchFire = document.getElementById("touchFire");
+
+    const state = {
+      units: new Set([1]),
+      difficulty: "normal",
+      running: false,
+      paused: false,
+      over: false,
+      score: 0,
+      combo: 0,
+      hp: 5,
+      xpGain: 0,
+      round: 20,
+      done: 0,
+      right: 0,
+      wrong: 0,
+      timeLeft: 0,
+      queue: [],
+      currentWord: null,
+      targets: [],
+      bullets: [],
+      particles: [],
+      stars: [],
+      ship: { x: 0.5, y: 0.92, w: 34, h: 34 },
+      key: { left: false, right: false },
+      fireStamp: 0,
+      nextStamp: 0,
+      width: 1200,
+      height: 720,
+      progress: loadProgress(),
+      lastTs: 0
+    };
 
     function loadProgress() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(STORE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
           if (parsed && parsed.wordStats) return parsed;
         }
-      } catch (err) {
-        console.warn("load progress failed", err);
-      }
+      } catch (_) {}
       return {
         xp: 0,
-        coins: 0,
+        bestScore: 0,
         bestCombo: 0,
-        totalCorrect: 0,
+        totalRight: 0,
         totalWrong: 0,
         sessions: 0,
         wordStats: {}
@@ -979,48 +749,40 @@
     }
 
     function saveProgress() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
+      localStorage.setItem(STORE_KEY, JSON.stringify(state.progress));
     }
 
-    function levelOf(xp) {
-      return Math.floor(xp / 240) + 1;
-    }
-
-    function ensureWordStat(wordId) {
+    function statOf(id) {
       const bag = state.progress.wordStats;
-      if (!bag[wordId]) {
-        bag[wordId] = {
-          right: 0,
-          wrong: 0,
-          streak: 0,
-          box: 1,
-          dueAt: 0,
-          seen: 0
-        };
-      }
-      return bag[wordId];
+      if (!bag[id]) bag[id] = { right: 0, wrong: 0, box: 1, due: 0 };
+      return bag[id];
+    }
+
+    function levelByXp(xp) {
+      return Math.floor(xp / 260) + 1;
     }
 
     function dueWeight(word) {
-      const st = ensureWordStat(word.id);
+      const st = statOf(word.id);
       const now = Date.now();
-      const overdue = Math.max(0, now - st.dueAt);
-      const weakBias = st.wrong * 2 - st.right * 0.4;
-      return overdue / 60000 + weakBias + (st.box <= 2 ? 6 : 0) + 1;
+      const dueBonus = st.due <= now ? 3 : 0;
+      const weak = st.wrong * 2.4 - st.right * 0.5;
+      const boxBias = st.box <= 2 ? 4 : st.box >= 4 ? -0.3 : 0;
+      return Math.max(0.35, 1 + dueBonus + weak + boxBias);
     }
 
-    function pickWords(pool, n) {
-      const copy = pool.slice();
+    function weightedPick(pool, n) {
+      const src = pool.slice();
       const out = [];
-      while (copy.length && out.length < n) {
-        const total = copy.reduce((sum, w) => sum + Math.max(0.2, dueWeight(w)), 0);
-        let target = Math.random() * total;
+      while (src.length && out.length < n) {
+        const total = src.reduce((s, w) => s + dueWeight(w), 0);
+        let hit = Math.random() * total;
         let idx = 0;
-        for (; idx < copy.length; idx += 1) {
-          target -= Math.max(0.2, dueWeight(copy[idx]));
-          if (target <= 0) break;
+        for (; idx < src.length; idx += 1) {
+          hit -= dueWeight(src[idx]);
+          if (hit <= 0) break;
         }
-        out.push(copy.splice(Math.min(idx, copy.length - 1), 1)[0]);
+        out.push(src.splice(Math.min(idx, src.length - 1), 1)[0]);
       }
       return out;
     }
@@ -1033,630 +795,585 @@
       return arr;
     }
 
-    function normalizeText(text) {
-      return text
-        .toLowerCase()
-        .replace(/[’']/g, "'")
-        .replace(/\s+/g, " ")
-        .trim();
+    function poolByUnits() {
+      return WORDS.filter((w) => state.units.has(w.unit));
     }
 
-    function nextDueByBox(box) {
+    function pickDecoys(pool, correctId, n) {
+      return shuffle(pool.filter((w) => w.id !== correctId).slice()).slice(0, n);
+    }
+
+    function nextDue(box) {
       const mins = [0, 3, 12, 60, 360, 1440];
-      return Date.now() + mins[Math.max(1, Math.min(5, box))] * 60000;
+      return Date.now() + mins[Math.max(1, Math.min(box, 5))] * 60000;
     }
 
-    function recordResult(word, correct) {
-      const st = ensureWordStat(word.id);
-      st.seen += 1;
+    function recordWord(word, correct) {
+      const st = statOf(word.id);
       if (correct) {
         st.right += 1;
-        st.streak += 1;
         st.box = Math.min(5, st.box + 1);
-        st.dueAt = nextDueByBox(st.box);
-        state.progress.totalCorrect += 1;
-        state.combo += 1;
-        state.progress.bestCombo = Math.max(state.progress.bestCombo, state.combo);
-        const gain = 10 + Math.min(12, state.combo * 2) + (st.box >= 4 ? 3 : 0);
-        state.progress.xp += gain;
-        state.progress.coins += Math.max(1, Math.floor(gain / 4));
-        sparkle(8);
-        feedback(`+${gain} XP · 连击 x${state.combo}`, "good");
+        st.due = nextDue(st.box);
+        state.progress.totalRight += 1;
       } else {
         st.wrong += 1;
-        st.streak = 0;
         st.box = Math.max(1, st.box - 1);
-        st.dueAt = Date.now() + 90 * 1000;
+        st.due = Date.now() + 120000;
         state.progress.totalWrong += 1;
-        state.combo = 0;
-        state.progress.xp += 2;
-        feedback(`记忆回退：${word.en}（${word.zh}）`, "bad");
       }
       saveProgress();
-      renderDashboard();
-      renderWeakWords();
+      renderHud();
+      renderWeakList();
     }
 
-    function feedback(msg, type = "") {
-      feedbackEl.textContent = msg;
-      feedbackEl.className = `feedback ${type}`;
+    function setMessage(text, type = "") {
+      messageEl.textContent = text;
+      messageEl.className = `message ${type}`;
     }
 
-    function log(msg) {
-      const now = new Date();
-      const hh = String(now.getHours()).padStart(2, "0");
-      const mm = String(now.getMinutes()).padStart(2, "0");
-      const line = document.createElement("div");
-      line.innerHTML = `<b>[${hh}:${mm}]</b> ${msg}`;
-      logEl.prepend(line);
-      while (logEl.children.length > 40) {
-        logEl.removeChild(logEl.lastChild);
-      }
+    function renderUnitChips() {
+      const units = [1, 2, 3, 4, 5, 6];
+      unitRow.innerHTML = units.map((u) => `<button class="unit-chip ${state.units.has(u) ? "active" : ""}" data-u="${u}">Unit ${u}</button>`).join("");
+      unitRow.querySelectorAll(".unit-chip").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const u = Number(btn.dataset.u);
+          if (state.units.has(u) && state.units.size > 1) state.units.delete(u);
+          else state.units.add(u);
+          renderUnitChips();
+          renderHud();
+          renderWeakList();
+          if (!state.running) setReadyPrompt();
+        });
+      });
     }
 
-    function sparkle(count) {
-      for (let i = 0; i < count; i += 1) {
-        const node = document.createElement("i");
-        node.className = "spark";
-        const x = Math.random() * window.innerWidth;
-        const y = Math.random() * window.innerHeight;
-        node.style.left = `${x}px`;
-        node.style.top = `${y}px`;
-        node.style.background = i % 3 === 0 ? "#41e8ff" : i % 3 === 1 ? "#fff" : "#ff8de7";
-        document.body.appendChild(node);
-        setTimeout(() => node.remove(), 720);
-      }
-    }
-
-    function unitPool() {
-      return WORDS.filter((w) => w.unit === state.unit);
-    }
-
-    function renderDashboard() {
-      const { xp, coins, bestCombo, totalCorrect, totalWrong } = state.progress;
-      const lv = levelOf(xp);
-      const pool = unitPool();
-      const dueCount = pool.filter((w) => ensureWordStat(w.id).dueAt <= Date.now()).length;
-      const acc = totalCorrect + totalWrong === 0 ? 0 : Math.round((totalCorrect / (totalCorrect + totalWrong)) * 100);
-      const mastered = pool.filter((w) => ensureWordStat(w.id).box >= 4).length;
-
+    function renderHud() {
+      const lv = levelByXp(state.progress.xp);
+      const pool = poolByUnits();
+      const due = pool.filter((w) => statOf(w.id).due <= Date.now()).length;
+      const acc = state.progress.totalRight + state.progress.totalWrong === 0
+        ? 0
+        : Math.round((state.progress.totalRight / (state.progress.totalRight + state.progress.totalWrong)) * 100);
       const metrics = [
-        ["等级 Level", `Lv.${lv}`],
-        ["经验 XP", String(xp)],
-        ["金币 Coin", String(coins)],
-        ["最高连击", `x${bestCombo}`],
-        ["准确率", `${acc}%`],
-        ["待复习词", `${dueCount}/${pool.length}`],
-        ["本单元掌握", `${mastered}/${pool.length}`],
-        ["当前连击", `x${state.combo}`]
+        ["当前得分", state.score],
+        ["连击", `x${state.combo}`],
+        ["生命", `${state.hp}/5`],
+        ["进度", `${state.done}/${state.round}`],
+        ["等级", `Lv.${lv}`],
+        ["总 XP", state.progress.xp],
+        ["正确率", `${acc}%`],
+        ["待复习", `${due}/${pool.length}`]
       ];
-
-      dashboardEl.innerHTML = metrics
-        .map(([k, v]) => `<div class="metric"><span>${k}</span><strong>${v}</strong></div>`)
-        .join("");
+      hud.innerHTML = metrics.map(([k, v]) => `<div class="metric"><span>${k}</span><strong>${v}</strong></div>`).join("");
     }
 
-    function renderWeakWords() {
-      const pool = unitPool();
-      const list = pool
+    function renderWeakList() {
+      const list = poolByUnits()
         .map((w) => {
-          const st = ensureWordStat(w.id);
-          const score = st.wrong * 3 - st.right + (st.box <= 2 ? 3 : 0);
-          return { w, st, score };
+          const st = statOf(w.id);
+          const risk = st.wrong * 2 - st.right + (st.box <= 2 ? 3 : 0);
+          return { w, st, risk };
         })
-        .sort((a, b) => b.score - a.score)
+        .sort((a, b) => b.risk - a.risk)
         .slice(0, 12);
 
-      weakWordsEl.innerHTML = list
-        .map(({ w, st }) => {
-          const rate = st.right + st.wrong === 0 ? "--" : `${Math.round((st.right / (st.right + st.wrong)) * 100)}%`;
-          return `
-            <div class="word-tag">
-              ${w.en}
-              <small>${w.zh} · 盒${st.box} · 正确率 ${rate}</small>
-            </div>`;
-        })
-        .join("");
+      weakList.innerHTML = list.map(({ w, st }) => {
+        const total = st.right + st.wrong;
+        const rate = total ? `${Math.round((st.right / total) * 100)}%` : "--";
+        return `<div class="weak-item">${w.en}<small>${w.zh} · 记忆盒 ${st.box} · 正确率 ${rate}</small></div>`;
+      }).join("");
     }
 
-    function renderUnitSelector() {
-      const units = [1, 2, 3, 4, 5, 6];
-      unitGridEl.innerHTML = units
-        .map((u) => `<button class="chip ${u === state.unit ? "active" : ""}" data-unit="${u}">Unit ${u}</button>`)
-        .join("");
-
-      unitGridEl.querySelectorAll(".chip").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          state.unit = Number(btn.dataset.unit);
-          state.combo = 0;
-          renderUnitSelector();
-          renderDashboard();
-          renderWeakWords();
-          setArenaIntro();
-        });
-      });
+    function setReadyPrompt() {
+      promptType.textContent = "READY";
+      promptMain.textContent = "点击“开始战斗”进入词汇射击";
+      const units = [...state.units].sort((a, b) => a - b).join(", ");
+      promptSub.textContent = `当前单元：${units} · 词库 ${poolByUnits().length} 个。`;
     }
 
-    function renderModeSelector() {
-      modeGridEl.innerHTML = MODES
-        .map((m) => `
-          <button class="mode-card ${m.id === state.mode ? "active" : ""}" data-mode="${m.id}">
-            <strong>${m.name}</strong>
-            <small>${m.desc}</small>
-          </button>`)
-        .join("");
-
-      modeGridEl.querySelectorAll(".mode-card").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          state.mode = btn.dataset.mode;
-          renderModeSelector();
-          renderModeHint();
-          setArenaIntro();
-        });
-      });
-    }
-
-    function renderModeHint() {
-      const m = MODES.find((x) => x.id === state.mode);
-      modeHintEl.textContent = `${m.name}：${m.hint}`;
-    }
-
-    function setArenaIntro() {
-      clearTimer();
-      state.running = false;
-      progressBar(0);
-      const mode = MODES.find((m) => m.id === state.mode);
-      arenaTitleEl.textContent = `Unit ${state.unit} · ${mode.name}`;
-      arenaSubEl.textContent = mode.desc;
-      arenaBodyEl.innerHTML = `
-        <div class="question-card">
-          <div class="question-type">READY</div>
-          <p class="question-main">点击“开始本轮”进入挑战</p>
-          <p class="question-sub">当前词库：${unitPool().length} 个。系统会优先抽取你的易错词。</p>
-        </div>`;
-      feedback("", "");
-    }
-
-    function progressBar(v) {
-      progressBarEl.style.width = `${Math.max(0, Math.min(100, v))}%`;
-    }
-
-    function clearTimer() {
-      if (state.timer) {
-        clearInterval(state.timer);
-        state.timer = null;
+    function resizeCanvas() {
+      const ratio = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * ratio);
+      canvas.height = Math.floor(rect.height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      state.width = rect.width;
+      state.height = rect.height;
+      if (!state.stars.length) {
+        for (let i = 0; i < 90; i += 1) {
+          state.stars.push({
+            x: Math.random() * state.width,
+            y: Math.random() * state.height,
+            r: 0.6 + Math.random() * 1.4,
+            tw: Math.random() * Math.PI * 2,
+            v: 8 + Math.random() * 18
+          });
+        }
       }
     }
 
-    function startMode() {
-      if (state.mode === "rush") startRush();
-      else if (state.mode === "memory") startMemory();
-      else startBoss();
-    }
-
-    function startRush() {
-      clearTimer();
+    function startRound() {
+      const pool = poolByUnits();
+      if (pool.length < 8) {
+        setMessage("词库太少，至少选择一个完整单元。", "bad");
+        return;
+      }
       state.running = true;
-      state.locked = false;
-      state.index = 0;
-      state.timeLeft = 12;
-      const pool = unitPool();
-      const qSize = Math.min(12, pool.length);
-      state.qList = pickWords(pool, qSize);
+      state.paused = false;
+      state.over = false;
+      state.score = 0;
+      state.combo = 0;
+      state.hp = 5;
+      state.xpGain = 0;
+      state.done = 0;
+      state.wrong = 0;
+      state.right = 0;
+      state.targets = [];
+      state.bullets = [];
+      state.particles = [];
+      state.queue = weightedPick(pool, Math.min(state.round, pool.length));
+      if (state.queue.length < state.round) {
+        const fill = shuffle(pool.slice()).slice(0, state.round - state.queue.length);
+        state.queue.push(...fill);
+      }
       state.progress.sessions += 1;
       saveProgress();
-      log(`进入 Unit ${state.unit} 闪电四选一，共 ${qSize} 题`);
-      renderRushQuestion();
-    }
-
-    function makeRushQuestion(word) {
-      const reverse = Math.random() > 0.5;
-      const pool = unitPool().filter((w) => w.id !== word.id);
-      const wrongs = shuffle(pool.slice()).slice(0, 3);
-      const options = shuffle([word, ...wrongs]);
-
-      return {
-        word,
-        reverse,
-        ask: reverse ? word.zh : word.en,
-        answer: reverse ? word.en : word.zh,
-        options: options.map((w) => (reverse ? w.en : w.zh))
-      };
-    }
-
-    function startRushTimer() {
-      clearTimer();
-      state.timeLeft = 12;
-      progressBar(100);
-      state.timer = setInterval(() => {
-        state.timeLeft -= 0.1;
-        progressBar((state.timeLeft / 12) * 100);
-        if (state.timeLeft <= 0) {
-          clearTimer();
-          state.locked = true;
-          if (state.current) {
-            recordResult(state.current.word, false);
-            log(`超时：${state.current.word.en}`);
-          }
-          setTimeout(nextQuestion, 650);
-        }
-      }, 100);
-    }
-
-    function renderRushQuestion() {
-      if (state.index >= state.qList.length) {
-        return endRush();
-      }
-
-      const q = makeRushQuestion(state.qList[state.index]);
-      state.current = q;
-      state.locked = false;
-      const type = q.reverse ? "中文 -> 选英文" : "英文 -> 选中文";
-      const progress = (state.index / state.qList.length) * 100;
-      progressBar(progress);
-
-      arenaTitleEl.textContent = `Unit ${state.unit} · 闪电四选一`;
-      arenaSubEl.textContent = `第 ${state.index + 1} / ${state.qList.length} 题`;
-
-      arenaBodyEl.innerHTML = `
-        <div class="question-card">
-          <div class="question-type">${type}</div>
-          <p class="question-main">${q.ask}</p>
-          <p class="question-sub">12 秒内完成选择，保持连击可获得额外 XP。</p>
-        </div>
-        <div class="option-grid" id="optionGrid">
-          ${q.options.map((opt) => `<button class="option" data-opt="${escapeHtml(opt)}">${opt}</button>`).join("")}
-        </div>
-      `;
-
-      const optionGrid = document.getElementById("optionGrid");
-      optionGrid.querySelectorAll(".option").forEach((btn) => {
-        btn.addEventListener("click", () => handleRushAnswer(btn, q));
-      });
-
-      startRushTimer();
-    }
-
-    function handleRushAnswer(btn, q) {
-      if (state.locked) return;
-      state.locked = true;
-      clearTimer();
-      const value = btn.textContent;
-      const optionBtns = arenaBodyEl.querySelectorAll(".option");
-      optionBtns.forEach((el) => {
-        if (el.textContent === q.answer) el.classList.add("ok");
-      });
-
-      if (value === q.answer) {
-        btn.classList.add("ok");
-        recordResult(q.word, true);
-        log(`命中：${q.word.en}`);
-      } else {
-        btn.classList.add("bad");
-        recordResult(q.word, false);
-        log(`失误：${q.word.en} -> ${q.word.zh}`);
-      }
-
-      setTimeout(nextQuestion, 640);
+      pauseBtn.textContent = "暂停";
+      setMessage("进入战斗状态", "good");
+      nextQuestion();
+      renderHud();
     }
 
     function nextQuestion() {
-      if (state.mode === "rush") {
-        state.index += 1;
-        renderRushQuestion();
+      if (state.hp <= 0) {
+        return finishRound(false);
       }
-    }
-
-    function endRush() {
-      clearTimer();
-      state.running = false;
-      progressBar(100);
-      arenaTitleEl.textContent = `Unit ${state.unit} · 本轮完成`;
-      arenaSubEl.textContent = "闪电模式已结束";
-      arenaBodyEl.innerHTML = `
-        <div class="question-card">
-          <div class="question-type">ROUND CLEAR</div>
-          <p class="question-main">做得不错，继续下一轮？</p>
-          <p class="question-sub">系统已将错词自动加入优先复习队列。</p>
-        </div>
-      `;
-      feedback("本轮结束。可切换模式做深度记忆。", "good");
-      log("闪电四选一完成");
-    }
-
-    function startMemory() {
-      clearTimer();
-      state.running = true;
-      const pool = pickWords(unitPool(), Math.min(8, unitPool().length));
-      const pick = pool.slice(0, Math.min(6, pool.length));
-      const cards = [];
-      pick.forEach((w) => {
-        cards.push({ uid: `${w.id}-en`, wordId: w.id, text: w.en, type: "en", matched: false, revealed: false, word: w });
-        cards.push({ uid: `${w.id}-zh`, wordId: w.id, text: w.zh, type: "zh", matched: false, revealed: false, word: w });
-      });
-      state.memory = {
-        cards: shuffle(cards),
-        revealed: [],
-        pairs: 0,
-        moves: 0,
-        total: pick.length,
-        lock: false
-      };
-      arenaTitleEl.textContent = `Unit ${state.unit} · 记忆翻牌局`;
-      arenaSubEl.textContent = `共 ${pick.length} 对英汉词条，完成配对即可通关`;
-      renderMemory();
-      feedback("", "");
-      log(`进入记忆翻牌，目标 ${pick.length} 对`);
-    }
-
-    function renderMemory() {
-      const m = state.memory;
-      progressBar((m.pairs / m.total) * 100);
-      arenaBodyEl.innerHTML = `
-        <div class="question-card">
-          <div class="question-type">PAIR MEMORY</div>
-          <p class="question-main">已配对 ${m.pairs} / ${m.total}</p>
-          <p class="question-sub">步数 ${m.moves}。先翻英文再找中文（或反过来）。</p>
-        </div>
-        <div class="memory-grid" id="memoryGrid">
-          ${m.cards.map((c, idx) => {
-            const cls = ["memory-card"];
-            if (c.revealed) cls.push("revealed");
-            if (c.matched) cls.push("matched");
-            const txt = c.revealed || c.matched ? c.text : "✦";
-            return `<button class="${cls.join(" ")}" data-idx="${idx}">${txt}</button>`;
-          }).join("")}
-        </div>
-      `;
-
-      const grid = document.getElementById("memoryGrid");
-      grid.querySelectorAll(".memory-card").forEach((btn) => {
-        btn.addEventListener("click", () => flipMemory(Number(btn.dataset.idx)));
-      });
-    }
-
-    function flipMemory(idx) {
-      const m = state.memory;
-      if (!m || m.lock) return;
-      const card = m.cards[idx];
-      if (card.matched || card.revealed) return;
-      card.revealed = true;
-      m.revealed.push(idx);
-      renderMemory();
-
-      if (m.revealed.length < 2) return;
-
-      m.moves += 1;
-      const [aIdx, bIdx] = m.revealed;
-      const a = m.cards[aIdx];
-      const b = m.cards[bIdx];
-
-      if (a.wordId === b.wordId && a.type !== b.type) {
-        a.matched = true;
-        b.matched = true;
-        m.revealed = [];
-        m.pairs += 1;
-        recordResult(a.word, true);
-        feedback(`配对成功：${a.word.en}`, "good");
-        log(`翻牌命中：${a.word.en}`);
-        if (m.pairs >= m.total) {
-          endMemory();
-        } else {
-          renderMemory();
-        }
-      } else {
-        m.lock = true;
-        recordResult(a.word, false);
-        recordResult(b.word, false);
-        feedback("配对失败，记忆回放队列 +2", "bad");
-        setTimeout(() => {
-          a.revealed = false;
-          b.revealed = false;
-          m.revealed = [];
-          m.lock = false;
-          renderMemory();
-        }, 620);
+      if (state.done >= state.round || state.done >= state.queue.length) {
+        return finishRound(true);
       }
+
+      const diff = DIFF[state.difficulty];
+      state.currentWord = state.queue[state.done];
+      state.timeLeft = diff.time;
+      state.targets = [];
+      state.bullets = [];
+      state.nextStamp = 0;
+
+      const pool = poolByUnits();
+      const decoys = pickDecoys(pool, state.currentWord.id, diff.options - 1);
+      const options = shuffle([state.currentWord, ...decoys]);
+      const slot = state.width / (options.length + 1);
+      options.forEach((w, i) => {
+        const textLen = w.en.length;
+        const r = Math.max(30, Math.min(44, 44 - Math.floor(textLen / 8)));
+        state.targets.push({
+          word: w,
+          correct: w.id === state.currentWord.id,
+          x: slot * (i + 1) + (Math.random() * 22 - 11),
+          y: -40 - Math.random() * 140,
+          r,
+          speed: diff.speed + Math.random() * 20,
+          drift: (Math.random() > 0.5 ? 1 : -1) * (diff.drift + Math.random() * 10),
+          seed: Math.random() * Math.PI * 2
+        });
+      });
+
+      promptType.textContent = "SHOOT THE RIGHT WORD";
+      promptMain.textContent = state.currentWord.zh;
+      promptSub.textContent = `第 ${state.done + 1}/${state.round} 题 · 射击对应英文词`; 
+      renderHud();
     }
 
-    function endMemory() {
+    function finishRound(cleared) {
       state.running = false;
-      state.progress.xp += 45;
-      state.progress.coins += 12;
+      state.over = true;
+      state.targets = [];
+      state.bullets = [];
+      state.progress.bestScore = Math.max(state.progress.bestScore, state.score);
+      state.progress.bestCombo = Math.max(state.progress.bestCombo, state.combo);
+      state.progress.xp += state.xpGain;
       saveProgress();
-      renderDashboard();
-      renderWeakWords();
-      sparkle(16);
-      progressBar(100);
-      arenaTitleEl.textContent = `Unit ${state.unit} · 记忆翻牌通关`;
-      arenaSubEl.textContent = `总步数 ${state.memory.moves}`;
-      feedback("记忆局完成：+45 XP +12 Coin", "good");
-      log("记忆翻牌通关");
-    }
-
-    function buildMask(word) {
-      return word
-        .split("")
-        .map((ch, idx) => {
-          if (/\s|-|'|\./.test(ch)) return ch;
-          if (idx === 0) return ch;
-          return "_";
-        })
-        .join("");
-    }
-
-    function startBoss() {
-      clearTimer();
-      state.running = true;
-      state.combo = 0;
-      const pool = pickWords(unitPool(), Math.min(18, unitPool().length));
-      state.boss = {
-        hp: 150,
-        maxHp: 150,
-        heart: 3,
-        queue: pool,
-        idx: 0,
-        current: null
-      };
-      arenaTitleEl.textContent = `Unit ${state.unit} · BOSS 拼写战`;
-      arenaSubEl.textContent = "中文释义 -> 英文拼写。击穿 BOSS 血条。";
-      renderBossTurn();
-      log(`进入 BOSS 拼写战，词池 ${pool.length}`);
-    }
-
-    function renderBossTurn() {
-      const b = state.boss;
-      if (!b) return;
-      if (b.hp <= 0) return endBoss(true);
-      if (b.heart <= 0) return endBoss(false);
-      if (b.idx >= b.queue.length) b.idx = 0;
-      b.current = b.queue[b.idx++];
-      const hpRate = (b.hp / b.maxHp) * 100;
-      progressBar(hpRate);
-
-      arenaBodyEl.innerHTML = `
-        <div class="question-card">
-          <div class="question-type">SPELLING BOSS</div>
-          <p class="question-main">${b.current.zh}</p>
-          <p class="question-sub">提示：${buildMask(b.current.en)}（长度 ${b.current.en.length}）</p>
-        </div>
-        <div class="battle-row">
-          <div class="battle-card">
-            <h4>你</h4>
-            <div class="hp">${"❤".repeat(b.heart)}${"♡".repeat(3 - b.heart)}</div>
-            <div style="margin-top:6px;font-size:0.85rem;color:var(--muted)">连击 x${state.combo}</div>
-          </div>
-          <div class="battle-card">
-            <h4>BOSS</h4>
-            <div class="bar"><i style="width:${hpRate}%"></i></div>
-            <div style="margin-top:6px;font-size:0.85rem;color:var(--muted)">HP ${b.hp}/${b.maxHp}</div>
-          </div>
-        </div>
-        <input class="input" id="spellInput" placeholder="输入完整英文拼写（回车提交）" autocomplete="off" />
-        <div class="btn-row" style="margin-top:10px;">
-          <button class="btn btn-primary" id="spellBtn">攻击</button>
-          <button class="btn btn-light" id="skipBtn">跳过（掉 1 心）</button>
-        </div>
-      `;
-
-      const input = document.getElementById("spellInput");
-      const submit = document.getElementById("spellBtn");
-      const skip = document.getElementById("skipBtn");
-      input.focus();
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") handleBossAnswer();
-      });
-      submit.addEventListener("click", handleBossAnswer);
-      skip.addEventListener("click", () => {
-        state.boss.heart -= 1;
-        state.combo = 0;
-        feedback(`跳过：正确拼写是 ${state.boss.current.en}`, "bad");
-        recordResult(state.boss.current, false);
-        setTimeout(renderBossTurn, 620);
-      });
-    }
-
-    function handleBossAnswer() {
-      const input = document.getElementById("spellInput");
-      if (!input || !state.boss || !state.boss.current) return;
-      const ans = normalizeText(input.value);
-      const right = normalizeText(state.boss.current.en);
-      if (!ans) return;
-
-      if (ans === right) {
-        const crit = Math.random() < 0.25;
-        const damage = 22 + Math.min(18, state.combo * 3) + (crit ? 14 : 0);
-        state.boss.hp = Math.max(0, state.boss.hp - damage);
-        recordResult(state.boss.current, true);
-        feedback(`命中${crit ? " · 暴击" : ""}：-${damage} HP`, "good");
-        log(`BOSS受击：${state.boss.current.en} -${damage}HP`);
+      renderHud();
+      renderWeakList();
+      if (cleared) {
+        promptType.textContent = "MISSION CLEAR";
+        promptMain.textContent = `通关完成！总分 ${state.score}`;
+        promptSub.textContent = `本轮获得 XP ${state.xpGain}，正确 ${state.right}，错误 ${state.wrong}`;
+        setMessage("通关成功，建议切到更高难度。", "good");
       } else {
-        state.boss.heart -= 1;
-        state.combo = 0;
-        recordResult(state.boss.current, false);
-        feedback(`拼写错误：应为 ${state.boss.current.en}`, "bad");
-        log(`BOSS回击：${state.boss.current.en}`);
+        promptType.textContent = "MISSION FAILED";
+        promptMain.textContent = `生命耗尽，得分 ${state.score}`;
+        promptSub.textContent = `本轮获得 XP ${state.xpGain}，正确 ${state.right}，错误 ${state.wrong}`;
+        setMessage("挑战失败，错词已进入优先复习。", "bad");
       }
-      setTimeout(renderBossTurn, 650);
     }
 
-    function endBoss(win) {
-      state.running = false;
-      if (win) {
-        state.progress.xp += 80;
-        state.progress.coins += 25;
-        saveProgress();
-        renderDashboard();
-        renderWeakWords();
-        sparkle(24);
-        arenaBodyEl.innerHTML = `
-          <div class="question-card">
-            <div class="question-type">BOSS DOWN</div>
-            <p class="question-main">胜利！你击败了 Unit ${state.unit} BOSS。</p>
-            <p class="question-sub">奖励：+80 XP，+25 Coin</p>
-          </div>
-        `;
-        feedback("拼写战通关。建议切回闪电模式巩固速度。", "good");
-        log("BOSS 拼写战胜利");
+    function fire() {
+      if (!state.running || state.paused || state.over) return;
+      const now = performance.now();
+      if (now - state.fireStamp < DIFF[state.difficulty].fireCd) return;
+      state.fireStamp = now;
+      state.bullets.push({ x: state.ship.x * state.width, y: state.ship.y * state.height - 20, vy: 540, r: 4 });
+      burst(state.ship.x * state.width, state.ship.y * state.height - 18, 4, "#40e6ff");
+    }
+
+    function burst(x, y, n, color) {
+      for (let i = 0; i < n; i += 1) {
+        const a = (Math.PI * 2 * i) / n + Math.random() * 0.4;
+        const sp = 40 + Math.random() * 90;
+        state.particles.push({
+          x, y,
+          vx: Math.cos(a) * sp,
+          vy: Math.sin(a) * sp,
+          life: 0.5 + Math.random() * 0.5,
+          color
+        });
+      }
+    }
+
+    function handleTargetHit(tIdx, bIdx) {
+      const t = state.targets[tIdx];
+      state.bullets.splice(bIdx, 1);
+      state.targets.splice(tIdx, 1);
+
+      if (t.correct) {
+        const gain = 16 + state.combo * 3 + DIFF[state.difficulty].bonus;
+        state.score += gain;
+        state.xpGain += Math.max(4, Math.floor(gain / 2));
+        state.combo += 1;
+        state.right += 1;
+        state.done += 1;
+        recordWord(state.currentWord, true);
+        setMessage(`命中 +${gain} 分 · 连击 x${state.combo}`, "good");
+        burst(t.x, t.y, 14, "#48e890");
+        state.nextStamp = performance.now() + 360;
       } else {
-        arenaBodyEl.innerHTML = `
-          <div class="question-card">
-            <div class="question-type">MISSION FAILED</div>
-            <p class="question-main">挑战失败，BOSS 仍有 ${state.boss.hp} HP。</p>
-            <p class="question-sub">先做“记忆翻牌”再回来复仇，效率更高。</p>
-          </div>
-        `;
-        feedback("战败：错词已加入优先复习队列", "bad");
-        log("BOSS 拼写战失败");
+        state.hp -= 1;
+        state.wrong += 1;
+        state.combo = 0;
+        recordWord(state.currentWord, false);
+        setMessage(`误击：${t.word.en}（-${1}生命）`, "bad");
+        burst(t.x, t.y, 10, "#ff6d87");
+        if (state.hp <= 0) {
+          finishRound(false);
+          return;
+        }
+        const pool = poolByUnits();
+        const [replacement] = pickDecoys(pool, state.currentWord.id, 1);
+        if (replacement) {
+          state.targets.push({
+            word: replacement,
+            correct: false,
+            x: 60 + Math.random() * (state.width - 120),
+            y: -40,
+            r: 34,
+            speed: DIFF[state.difficulty].speed + Math.random() * 20,
+            drift: (Math.random() > 0.5 ? 1 : -1) * (DIFF[state.difficulty].drift + Math.random() * 10),
+            seed: Math.random() * Math.PI * 2
+          });
+        }
       }
-      progressBar(win ? 100 : (state.boss.hp / state.boss.maxHp) * 100);
+      renderHud();
     }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
+    function update(dt, ts) {
+      if (!state.running || state.paused || state.over) return;
+
+      if (state.nextStamp && ts >= state.nextStamp) {
+        nextQuestion();
+      }
+
+      const moveSpeed = 0.62 * dt;
+      if (state.key.left) state.ship.x -= moveSpeed;
+      if (state.key.right) state.ship.x += moveSpeed;
+      state.ship.x = Math.max(0.06, Math.min(0.94, state.ship.x));
+
+      state.timeLeft -= dt;
+      if (state.timeLeft <= 0 && !state.nextStamp) {
+        state.hp -= 1;
+        state.wrong += 1;
+        state.combo = 0;
+        recordWord(state.currentWord, false);
+        setMessage(`超时：${state.currentWord.en}（-${1}生命）`, "bad");
+        if (state.hp <= 0) {
+          finishRound(false);
+          return;
+        }
+        state.done += 1;
+        state.nextStamp = ts + 320;
+      }
+
+      for (let i = state.bullets.length - 1; i >= 0; i -= 1) {
+        const b = state.bullets[i];
+        b.y -= b.vy * dt;
+        if (b.y < -20) state.bullets.splice(i, 1);
+      }
+
+      for (let i = state.targets.length - 1; i >= 0; i -= 1) {
+        const t = state.targets[i];
+        t.y += t.speed * dt;
+        t.x += Math.sin(ts * 0.0012 + t.seed) * t.drift * dt;
+        t.x = Math.max(t.r + 2, Math.min(state.width - t.r - 2, t.x));
+
+        if (t.y - t.r > state.height) {
+          state.targets.splice(i, 1);
+          if (t.correct) {
+            state.hp -= 1;
+            state.wrong += 1;
+            state.combo = 0;
+            recordWord(state.currentWord, false);
+            setMessage(`漏掉正确词：${state.currentWord.en}`, "bad");
+            if (state.hp <= 0) return finishRound(false);
+            state.done += 1;
+            state.nextStamp = ts + 300;
+          }
+          continue;
+        }
+
+        for (let j = state.bullets.length - 1; j >= 0; j -= 1) {
+          const b = state.bullets[j];
+          const dx = b.x - t.x;
+          const dy = b.y - t.y;
+          const rr = b.r + t.r;
+          if (dx * dx + dy * dy <= rr * rr) {
+            handleTargetHit(i, j);
+            break;
+          }
+        }
+      }
+
+      for (let i = state.particles.length - 1; i >= 0; i -= 1) {
+        const p = state.particles[i];
+        p.life -= dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.vx *= 0.98;
+        p.vy *= 0.98;
+        if (p.life <= 0) state.particles.splice(i, 1);
+      }
+    }
+
+    function drawTextInBubble(text, x, y, r) {
+      ctx.save();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#f0f6ff";
+      const max = r * 1.6;
+      let size = 15;
+      ctx.font = `700 ${size}px Trebuchet MS, Arial, sans-serif`;
+      while (size > 10 && ctx.measureText(text).width > max) {
+        size -= 1;
+        ctx.font = `700 ${size}px Trebuchet MS, Arial, sans-serif`;
+      }
+
+      const words = text.split(" ");
+      const lines = [];
+      let line = "";
+      for (const w of words) {
+        const test = line ? `${line} ${w}` : w;
+        if (ctx.measureText(test).width <= max || !line) line = test;
+        else {
+          lines.push(line);
+          line = w;
+        }
+      }
+      if (line) lines.push(line);
+
+      const shown = lines.slice(0, 2);
+      const lh = Math.max(12, size + 1);
+      const baseY = y - ((shown.length - 1) * lh) / 2;
+      shown.forEach((ln, i) => ctx.fillText(ln, x, baseY + i * lh));
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, state.width, state.height);
+
+      const g = ctx.createLinearGradient(0, 0, 0, state.height);
+      g.addColorStop(0, "rgba(7,16,34,0.95)");
+      g.addColorStop(1, "rgba(8,22,50,0.95)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, state.width, state.height);
+
+      state.stars.forEach((s) => {
+        s.y += s.v * 0.012;
+        if (s.y > state.height + 2) s.y = -2;
+        const a = 0.35 + Math.sin(performance.now() * 0.001 + s.tw) * 0.2;
+        ctx.fillStyle = `rgba(210,230,255,${a})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      for (let i = 0; i < 9; i += 1) {
+        const y = (state.height / 9) * i;
+        ctx.strokeStyle = "rgba(120,155,230,0.09)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(state.width, y);
+        ctx.stroke();
+      }
+
+      state.targets.forEach((t) => {
+        const bubble = ctx.createRadialGradient(t.x - t.r * 0.3, t.y - t.r * 0.4, t.r * 0.2, t.x, t.y, t.r);
+        bubble.addColorStop(0, "rgba(202, 226, 255, 0.96)");
+        bubble.addColorStop(0.45, "rgba(84, 133, 226, 0.9)");
+        bubble.addColorStop(1, "rgba(43, 72, 145, 0.95)");
+        ctx.fillStyle = bubble;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, t.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(233,245,255,0.64)";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(255,255,255,0.22)";
+        ctx.beginPath();
+        ctx.arc(t.x - t.r * 0.35, t.y - t.r * 0.35, t.r * 0.22, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawTextInBubble(t.word.en, t.x, t.y, t.r);
+      });
+
+      state.bullets.forEach((b) => {
+        ctx.fillStyle = "#46edff";
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(118,247,255,0.9)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(b.x, b.y + 8);
+        ctx.lineTo(b.x, b.y + 20);
+        ctx.stroke();
+      });
+
+      state.particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+
+      const sx = state.ship.x * state.width;
+      const sy = state.ship.y * state.height;
+      ctx.save();
+      ctx.translate(sx, sy);
+      ctx.shadowBlur = 16;
+      ctx.shadowColor = "rgba(64,230,255,0.8)";
+      const shipGrad = ctx.createLinearGradient(-18, -12, 18, 14);
+      shipGrad.addColorStop(0, "#42e9ff");
+      shipGrad.addColorStop(0.55, "#9f8dff");
+      shipGrad.addColorStop(1, "#ff6dc6");
+      ctx.fillStyle = shipGrad;
+      ctx.beginPath();
+      ctx.moveTo(0, -18);
+      ctx.lineTo(16, 14);
+      ctx.lineTo(-16, 14);
+      ctx.closePath();
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = "rgba(255,231,165,0.85)";
+      ctx.fillRect(-3, 14, 6, 8);
+      ctx.restore();
+
+      if (!state.running) {
+        ctx.fillStyle = "rgba(5,11,26,0.42)";
+        ctx.fillRect(0, 0, state.width, state.height);
+      }
+    }
+
+    function loop(ts) {
+      if (!state.lastTs) state.lastTs = ts;
+      const dt = Math.min(0.034, (ts - state.lastTs) / 1000);
+      state.lastTs = ts;
+      update(dt, ts);
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    function bindInput() {
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") state.key.left = true;
+        if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") state.key.right = true;
+        if (e.key === " ") {
+          e.preventDefault();
+          fire();
+        }
+      });
+
+      window.addEventListener("keyup", (e) => {
+        if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") state.key.left = false;
+        if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") state.key.right = false;
+      });
+
+      canvas.addEventListener("pointerdown", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        state.ship.x = Math.max(0.06, Math.min(0.94, (e.clientX - rect.left) / rect.width));
+        fire();
+      });
+
+      canvas.addEventListener("pointermove", (e) => {
+        if (e.buttons !== 1) return;
+        const rect = canvas.getBoundingClientRect();
+        state.ship.x = Math.max(0.06, Math.min(0.94, (e.clientX - rect.left) / rect.width));
+      });
+
+      touchLeft.addEventListener("pointerdown", () => { state.key.left = true; });
+      touchLeft.addEventListener("pointerup", () => { state.key.left = false; });
+      touchLeft.addEventListener("pointerleave", () => { state.key.left = false; });
+
+      touchRight.addEventListener("pointerdown", () => { state.key.right = true; });
+      touchRight.addEventListener("pointerup", () => { state.key.right = false; });
+      touchRight.addEventListener("pointerleave", () => { state.key.right = false; });
+
+      touchFire.addEventListener("pointerdown", fire);
     }
 
     function bindActions() {
-      startBtn.addEventListener("click", () => {
-        state.combo = 0;
-        startMode();
+      difficultySel.addEventListener("change", () => {
+        state.difficulty = difficultySel.value;
+        hint.textContent = `当前难度：${difficultySel.options[difficultySel.selectedIndex].text}。A/D 或 ←/→ 移动，空格发射。`;
       });
 
-      nextBtn.addEventListener("click", () => {
-        if (state.mode === "rush" && state.running) {
-          clearTimer();
-          state.locked = true;
-          state.index += 1;
-          renderRushQuestion();
-        }
+      startBtn.addEventListener("click", startRound);
+
+      pauseBtn.addEventListener("click", () => {
+        if (!state.running || state.over) return;
+        state.paused = !state.paused;
+        pauseBtn.textContent = state.paused ? "继续" : "暂停";
+        setMessage(state.paused ? "已暂停" : "继续战斗", "");
       });
 
       resetBtn.addEventListener("click", () => {
-        if (!confirm("确认重置全部词汇进度和奖励吗？")) return;
-        localStorage.removeItem(STORAGE_KEY);
+        if (!confirm("确认清空本地学习进度吗？")) return;
+        localStorage.removeItem(STORE_KEY);
         state.progress = loadProgress();
+        state.score = 0;
         state.combo = 0;
-        renderDashboard();
-        renderWeakWords();
-        setArenaIntro();
-        log("已重置全部进度");
+        state.hp = 5;
+        renderHud();
+        renderWeakList();
+        setReadyPrompt();
+        setMessage("进度已重置", "");
       });
     }
 
     function init() {
-      renderUnitSelector();
-      renderModeSelector();
-      renderModeHint();
-      renderDashboard();
-      renderWeakWords();
-      setArenaIntro();
+      renderUnitChips();
+      renderHud();
+      renderWeakList();
+      setReadyPrompt();
+      bindInput();
       bindActions();
-      log("系统就绪：可开始英语词汇闯关");
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+      setMessage("准备就绪", "");
+      requestAnimationFrame(loop);
     }
 
     init();
