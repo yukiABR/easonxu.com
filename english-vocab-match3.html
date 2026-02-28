@@ -1,0 +1,1298 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>英语词汇消除场 · Grade 8</title>
+  <style>
+    :root {
+      --bg-a: #070c1c;
+      --bg-b: #111f45;
+      --bg-c: #1a3270;
+      --text: #edf4ff;
+      --muted: #a5b8dd;
+      --line: rgba(147, 181, 255, 0.34);
+      --panel: rgba(10, 20, 47, 0.78);
+      --panel-strong: rgba(12, 24, 58, 0.9);
+      --cyan: #43e8ff;
+      --violet: #9d8cff;
+      --pink: #ff6ec5;
+      --gold: #ffd86b;
+      --good: #48e591;
+      --bad: #ff6d88;
+      --shadow: 0 16px 44px rgba(3, 8, 23, 0.56);
+      --r: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "STKaiti", "Kaiti SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(67, 232, 255, 0.22), transparent 28%),
+        radial-gradient(circle at 87% 14%, rgba(157, 140, 255, 0.2), transparent 26%),
+        radial-gradient(circle at 58% 84%, rgba(255, 110, 197, 0.14), transparent 34%),
+        linear-gradient(145deg, var(--bg-a), var(--bg-b) 52%, var(--bg-c));
+      padding: 14px;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: -45vh -30vw;
+      pointer-events: none;
+      z-index: -2;
+      background:
+        repeating-linear-gradient(132deg,
+          transparent 0,
+          transparent 24px,
+          rgba(150, 192, 255, 0.03) 24px,
+          rgba(150, 192, 255, 0.03) 25px);
+      animation: drift 24s linear infinite;
+    }
+
+    body::after {
+      opacity: 0.52;
+      transform: scale(1.08);
+      animation-duration: 32s;
+      animation-direction: reverse;
+      filter: blur(1px);
+    }
+
+    @keyframes drift {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-86px, -86px, 0); }
+    }
+
+    .app {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel {
+      border-radius: var(--r);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 14px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -50% -30%;
+      z-index: 0;
+      background:
+        conic-gradient(from 0deg,
+          rgba(67, 232, 255, 0.15),
+          rgba(157, 140, 255, 0.1),
+          rgba(255, 110, 197, 0.14),
+          rgba(67, 232, 255, 0.15));
+      filter: blur(26px);
+      animation: spin 18s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hero-main,
+    .hero-tags { position: relative; z-index: 1; }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.22rem, 2.3vw, 1.9rem);
+      letter-spacing: 0.04em;
+    }
+
+    .hero p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .tag {
+      border: 1px solid rgba(67, 232, 255, 0.52);
+      background: rgba(67, 232, 255, 0.12);
+      border-radius: 999px;
+      padding: 5px 10px;
+      color: var(--cyan);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .unit-chip,
+    .btn,
+    .select {
+      border-radius: 11px;
+      border: 1px solid transparent;
+      background: rgba(14, 27, 57, 0.9);
+      color: var(--text);
+      font: inherit;
+      padding: 8px 10px;
+    }
+
+    .unit-chip,
+    .btn {
+      cursor: pointer;
+      transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .unit-chip:hover,
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(131, 168, 255, 0.62);
+      box-shadow: 0 8px 16px rgba(4, 11, 30, 0.42);
+    }
+
+    .unit-chip.active {
+      border-color: rgba(255, 216, 107, 0.9);
+      background: rgba(89, 68, 21, 0.52);
+      color: #ffeab2;
+      box-shadow: 0 0 0 1px rgba(255, 216, 107, 0.52) inset;
+    }
+
+    .btn-primary {
+      border: none;
+      color: #07111f;
+      font-weight: 800;
+      background: linear-gradient(135deg, #36e3ff, #8e95ff 50%, #ff6ec5);
+    }
+
+    .btn-light {
+      border-color: rgba(131, 168, 255, 0.45);
+      color: #e0edff;
+      background: rgba(13, 25, 53, 0.84);
+    }
+
+    .btn-danger {
+      border-color: rgba(255, 109, 136, 0.58);
+      background: rgba(88, 22, 38, 0.56);
+      color: #ffc8d4;
+    }
+
+    .select {
+      border-color: rgba(131, 166, 255, 0.45);
+      min-width: 128px;
+    }
+
+    .hint {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .hud {
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .metric {
+      border: 1px solid rgba(131, 166, 255, 0.32);
+      border-radius: 11px;
+      background: rgba(11, 21, 46, 0.86);
+      min-height: 62px;
+      padding: 8px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.76rem;
+      display: block;
+    }
+
+    .metric strong {
+      margin-top: 4px;
+      display: block;
+      font-size: 1.02rem;
+      letter-spacing: 0.03em;
+      font-family: "Futura", "Trebuchet MS", sans-serif;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 330px;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .game {
+      padding: 12px;
+    }
+
+    .mission {
+      border: 1px solid rgba(131, 166, 255, 0.4);
+      border-radius: 12px;
+      background: linear-gradient(140deg, rgba(12, 24, 52, 0.9), rgba(15, 30, 66, 0.84));
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mission::after {
+      content: "";
+      position: absolute;
+      top: -40%;
+      left: -16%;
+      width: 52%;
+      height: 220%;
+      transform: rotate(22deg);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.09), transparent);
+      animation: sweep 4.4s linear infinite;
+    }
+
+    @keyframes sweep {
+      to { transform: translateX(250%) rotate(22deg); }
+    }
+
+    .mission b {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #9bc4ff;
+      position: relative;
+      z-index: 1;
+    }
+
+    .mission strong {
+      position: relative;
+      z-index: 1;
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(1.05rem, 2.3vw, 1.45rem);
+      line-height: 1.35;
+      text-shadow: 0 3px 10px rgba(6, 13, 32, 0.6);
+    }
+
+    .mission small {
+      position: relative;
+      z-index: 1;
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .board-wrap {
+      border: 1px solid rgba(131, 166, 255, 0.42);
+      border-radius: 14px;
+      background: linear-gradient(160deg, rgba(9, 18, 39, 0.94), rgba(13, 27, 60, 0.9));
+      padding: 10px;
+      overflow: auto;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(62px, 1fr));
+      gap: 8px;
+      min-height: 544px;
+    }
+
+    .tile {
+      min-height: 62px;
+      border-radius: 12px;
+      border: 1px solid rgba(130, 165, 255, 0.4);
+      background: linear-gradient(145deg, rgba(18, 35, 74, 0.95), rgba(10, 20, 43, 0.92));
+      color: #f0f6ff;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 5px 6px;
+      font-size: 0.84rem;
+      line-height: 1.25;
+      user-select: none;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+      position: relative;
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    .tile::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 14%, rgba(255, 255, 255, 0.16), transparent 40%);
+      pointer-events: none;
+    }
+
+    .tile:hover {
+      transform: translateY(-1px);
+      border-color: rgba(67, 232, 255, 0.75);
+      box-shadow: 0 10px 15px rgba(6, 13, 32, 0.44);
+    }
+
+    .tile.selected {
+      border-color: rgba(255, 216, 107, 0.92);
+      box-shadow: 0 0 0 1px rgba(255, 216, 107, 0.5) inset;
+      transform: scale(1.03);
+    }
+
+    .tile.match {
+      animation: pop 320ms ease;
+      border-color: rgba(72, 229, 145, 0.86);
+      background: linear-gradient(145deg, rgba(53, 164, 112, 0.92), rgba(27, 86, 67, 0.92));
+    }
+
+    .tile.target-glow {
+      box-shadow: 0 0 0 1px rgba(67, 232, 255, 0.48) inset, 0 0 18px rgba(67, 232, 255, 0.32);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.07); }
+      100% { transform: scale(1); }
+    }
+
+    .side {
+      display: grid;
+      gap: 10px;
+    }
+
+    .card {
+      border-radius: 12px;
+      border: 1px solid rgba(131, 166, 255, 0.35);
+      background: rgba(10, 19, 42, 0.82);
+      padding: 10px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+    }
+
+    .msg {
+      border-radius: 10px;
+      border: 1px solid rgba(131, 166, 255, 0.34);
+      background: rgba(8, 16, 36, 0.76);
+      padding: 8px 10px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      min-height: 40px;
+      line-height: 1.4;
+    }
+
+    .msg.good { color: var(--good); border-color: rgba(72, 229, 145, 0.56); }
+    .msg.bad { color: var(--bad); border-color: rgba(255, 109, 136, 0.56); }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      max-height: 250px;
+      overflow: auto;
+    }
+
+    .item {
+      border-radius: 10px;
+      border: 1px solid rgba(131, 166, 255, 0.32);
+      background: rgba(10, 20, 43, 0.84);
+      padding: 7px 8px;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .item small {
+      display: block;
+      margin-top: 2px;
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    .rules {
+      font-size: 0.83rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .rules b { color: #dde9ff; }
+
+    @media (max-width: 1020px) {
+      .main { grid-template-columns: 1fr; }
+      .hud { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .board { grid-template-columns: repeat(8, minmax(50px, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 8px; }
+      .hud { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .board { grid-template-columns: repeat(6, minmax(48px, 1fr)); min-height: unset; }
+      .tile { min-height: 56px; font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel hero">
+      <div class="hero-main">
+        <h1>英语词汇消除场 · Match-3 Memory</h1>
+        <p>将相同词汇概念连成 3 个以上进行消除。任务词优先，强化记忆与反应速度。</p>
+      </div>
+      <div class="hero-tags">
+        <div class="tag-row">
+          <span class="tag">三消词汇</span>
+          <span class="tag">任务导向</span>
+          <span class="tag">错词回放</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel toolbar">
+      <div class="row" id="unitRow"></div>
+      <div class="row">
+        <select id="diffSel" class="select">
+          <option value="easy">难度 Easy</option>
+          <option value="normal" selected>难度 Normal</option>
+          <option value="hard">难度 Hard</option>
+        </select>
+        <button class="btn btn-primary" id="startBtn">开始对局</button>
+        <button class="btn btn-light" id="shuffleBtn">洗牌</button>
+        <button class="btn btn-danger" id="resetBtn">重置进度</button>
+      </div>
+      <div class="hint" id="hint">操作：点击两个相邻格子交换；形成 3 连及以上即可消除。</div>
+    </section>
+
+    <section class="panel hud" id="hud"></section>
+
+    <div class="main">
+      <section class="panel game">
+        <div class="mission">
+          <b id="missionType">MISSION</b>
+          <strong id="missionMain">点击“开始对局”</strong>
+          <small id="missionSub">目标词会有额外奖励；偏离目标会降低任务评分。</small>
+        </div>
+        <div class="board-wrap">
+          <div class="board" id="board"></div>
+        </div>
+      </section>
+
+      <aside class="side">
+        <section class="card">
+          <h3>战况信息</h3>
+          <div class="msg" id="message">准备就绪。</div>
+        </section>
+
+        <section class="card">
+          <h3>错词雷达</h3>
+          <div class="list" id="weakList"></div>
+        </section>
+
+        <section class="card">
+          <h3>规则摘要</h3>
+          <div class="rules">
+            <div><b>1.</b> 每局固定步数，消除时优先命中“当前任务词”。</div>
+            <div><b>2.</b> 命中任务词：额外加分与 XP；未命中任务：记为一次偏离。</div>
+            <div><b>3.</b> 错词会进入优先队列，后续对局出现频率更高。</div>
+            <div><b>4.</b> 词块会混合显示英文与中文，训练双向联想。</div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const WORDS = [
+      { unit: 1, en: "self-expression", zh: "自我表达" },
+      { unit: 1, en: "creativity", zh: "创造力" },
+      { unit: 1, en: "scissors", zh: "剪刀" },
+      { unit: 1, en: "drama", zh: "戏剧" },
+      { unit: 1, en: "acting", zh: "表演" },
+      { unit: 1, en: "normal", zh: "正常的；典型的" },
+      { unit: 1, en: "pottery", zh: "陶器；陶艺" },
+      { unit: 1, en: "rather than", zh: "而不是" },
+      { unit: 1, en: "position", zh: "位置" },
+      { unit: 1, en: "instrument", zh: "器具；仪器" },
+      { unit: 1, en: "sculpture", zh: "雕塑" },
+      { unit: 1, en: "landscape", zh: "风景" },
+      { unit: 1, en: "master", zh: "大师；能手" },
+      { unit: 1, en: "dynasty", zh: "朝代" },
+      { unit: 1, en: "harmony", zh: "和谐" },
+      { unit: 1, en: "ahead", zh: "在前方" },
+      { unit: 1, en: "peaceful", zh: "安静的；宁静的" },
+
+      { unit: 2, en: "discovery", zh: "发现" },
+      { unit: 2, en: "ancient", zh: "古代的" },
+      { unit: 2, en: "exploration", zh: "探索；勘查" },
+      { unit: 2, en: "wheel", zh: "轮子" },
+      { unit: 2, en: "economy", zh: "经济" },
+      { unit: 2, en: "material", zh: "材料；原料" },
+      { unit: 2, en: "war", zh: "战争" },
+      { unit: 2, en: "illness", zh: "疾病" },
+      { unit: 2, en: "habit", zh: "习惯" },
+      { unit: 2, en: "hardly", zh: "几乎不" },
+      { unit: 2, en: "totally", zh: "完全地" },
+      { unit: 2, en: "telephone", zh: "电话" },
+      { unit: 2, en: "X-ray", zh: "X 光" },
+      { unit: 2, en: "award", zh: "奖励" },
+      { unit: 2, en: "by accident", zh: "偶然；意外地" },
+      { unit: 2, en: "bacteria", zh: "细菌" },
+      { unit: 2, en: "life-saving", zh: "救命的" },
+      { unit: 2, en: "treat", zh: "医治" },
+      { unit: 2, en: "medical", zh: "医学的；医疗的" },
+      { unit: 2, en: "volunteer", zh: "志愿做；志愿者" },
+      { unit: 2, en: "independent", zh: "独立的" },
+      { unit: 2, en: "responsibility", zh: "责任" },
+      { unit: 2, en: "account", zh: "账户" },
+      { unit: 2, en: "economist", zh: "经济学家" },
+      { unit: 2, en: "exchange", zh: "交换" },
+      { unit: 2, en: "cost", zh: "成本；花费" },
+      { unit: 2, en: "completely", zh: "完全地" },
+      { unit: 2, en: "valuable", zh: "有价值的；宝贵的" },
+      { unit: 2, en: "percentage", zh: "百分率" },
+
+      { unit: 3, en: "mall", zh: "购物商场" },
+      { unit: 3, en: "sale", zh: "出售；销售" },
+      { unit: 3, en: "payment", zh: "支付；付款" },
+      { unit: 3, en: "cash", zh: "现金" },
+      { unit: 3, en: "assistant", zh: "店员；助手" },
+      { unit: 3, en: "deal", zh: "交易；协议" },
+      { unit: 3, en: "bill", zh: "账单" },
+      { unit: 3, en: "donate", zh: "捐赠" },
+      { unit: 3, en: "cheap", zh: "便宜的" },
+      { unit: 3, en: "chocolate", zh: "巧克力" },
+      { unit: 3, en: "pocket", zh: "衣袋；口袋" },
+      { unit: 3, en: "budget", zh: "预算" },
+      { unit: 3, en: "financial", zh: "财政的；金融的" },
+      { unit: 3, en: "account for", zh: "占（数量上比例）" },
+
+      { unit: 4, en: "fashion", zh: "时尚" },
+      { unit: 4, en: "trainers", zh: "运动鞋" },
+      { unit: 4, en: "decoration", zh: "装饰品" },
+      { unit: 4, en: "afford", zh: "买得起；承担得起" },
+      { unit: 4, en: "fashionable", zh: "流行的" },
+      { unit: 4, en: "outfit", zh: "全套服装" },
+      { unit: 4, en: "narrow", zh: "狭窄的" },
+      { unit: 4, en: "baggy", zh: "宽松的" },
+      { unit: 4, en: "advertising", zh: "广告业；广告活动" },
+      { unit: 4, en: "advertisement", zh: "广告" },
+      { unit: 4, en: "image", zh: "形象；印象" },
+      { unit: 4, en: "influencer", zh: "有影响力的人" },
+      { unit: 4, en: "pioneer", zh: "先锋；带头人" },
+      { unit: 4, en: "jewellery", zh: "珠宝；首饰" },
+      { unit: 4, en: "attract", zh: "吸引" },
+      { unit: 4, en: "relaxed", zh: "放松的；自在的" },
+      { unit: 4, en: "grade", zh: "分数；等级" },
+      { unit: 4, en: "interest", zh: "兴趣" },
+
+      { unit: 5, en: "disaster", zh: "灾难" },
+      { unit: 5, en: "flood", zh: "洪水" },
+      { unit: 5, en: "earthquake", zh: "地震" },
+      { unit: 5, en: "terrible", zh: "可怕的" },
+      { unit: 5, en: "force", zh: "力量；迫使" },
+      { unit: 5, en: "injury", zh: "伤害；损伤" },
+      { unit: 5, en: "death", zh: "死亡" },
+      { unit: 5, en: "destroy", zh: "摧毁；破坏" },
+      { unit: 5, en: "effect", zh: "影响；作用" },
+      { unit: 5, en: "exam", zh: "考试" },
+      { unit: 5, en: "typhoon", zh: "台风" },
+      { unit: 5, en: "battery", zh: "电池" },
+      { unit: 5, en: "in case", zh: "以防；以防万一" },
+      { unit: 5, en: "go off", zh: "中断；响起" },
+      { unit: 5, en: "pick up", zh: "增强；收拾" },
+      { unit: 5, en: "lock", zh: "锁住；锁" },
+      { unit: 5, en: "cancel", zh: "取消" },
+      { unit: 5, en: "necessary", zh: "必要的" },
+      { unit: 5, en: "electronic", zh: "电子的" },
+      { unit: 5, en: "survive", zh: "幸存" },
+      { unit: 5, en: "similar", zh: "相像的" },
+      { unit: 5, en: "rapid", zh: "迅速的" },
+
+      { unit: 6, en: "towards", zh: "朝；向" },
+      { unit: 6, en: "whether", zh: "是否" },
+      { unit: 6, en: "get away", zh: "离开；逃离" },
+      { unit: 6, en: "hotel", zh: "旅馆" },
+      { unit: 6, en: "guard", zh: "警卫；看守" },
+      { unit: 6, en: "urge", zh: "敦促；力劝" },
+      { unit: 6, en: "seaside", zh: "海边" },
+      { unit: 6, en: "thunder", zh: "雷；雷声" },
+      { unit: 6, en: "coast", zh: "海岸" },
+      { unit: 6, en: "rise", zh: "上升；升高" },
+      { unit: 6, en: "rescue", zh: "营救；救援" },
+      { unit: 6, en: "tent", zh: "帐篷" },
+      { unit: 6, en: "confused", zh: "困惑的" },
+      { unit: 6, en: "tool", zh: "工具" },
+      { unit: 6, en: "knife", zh: "刀" },
+      { unit: 6, en: "fork", zh: "叉子" },
+      { unit: 6, en: "packet", zh: "密封小袋" },
+      { unit: 6, en: "seed", zh: "种子" },
+      { unit: 6, en: "dead", zh: "死的；枯萎的" },
+      { unit: 6, en: "cheerleader", zh: "拉拉队队员" },
+      { unit: 6, en: "whenever", zh: "无论何时" },
+      { unit: 6, en: "stare", zh: "盯着看" },
+      { unit: 6, en: "hang", zh: "悬挂；吊" },
+      { unit: 6, en: "hang out", zh: "常去某处" },
+      { unit: 6, en: "dig", zh: "挖；掘" },
+      { unit: 6, en: "neither", zh: "两者都不" },
+      { unit: 6, en: "as if", zh: "好像；仿佛" },
+      { unit: 6, en: "lie", zh: "躺；平躺" },
+      { unit: 6, en: "joke", zh: "玩笑" },
+      { unit: 6, en: "finish", zh: "完成；结束" },
+      { unit: 6, en: "over the moon", zh: "欣喜若狂" },
+      { unit: 6, en: "especially", zh: "尤其；特别" },
+      { unit: 6, en: "novel", zh: "小说" },
+      { unit: 6, en: "magical", zh: "魔法的；神奇的" },
+      { unit: 6, en: "cheerful", zh: "开朗的；乐观的" },
+      { unit: 6, en: "caring", zh: "关心他人的；体贴的" },
+      { unit: 6, en: "firm", zh: "坚定的；坚决的" }
+    ].map((w, i) => ({ ...w, id: `u${w.unit}-${i}-${w.en.toLowerCase()}` }));
+
+    const CONFIG = {
+      easy: { moves: 36, missionCount: 6, poolConcepts: 10, scoreMul: 1.0 },
+      normal: { moves: 30, missionCount: 7, poolConcepts: 11, scoreMul: 1.2 },
+      hard: { moves: 24, missionCount: 8, poolConcepts: 12, scoreMul: 1.4 }
+    };
+
+    const STORE_KEY = "english_match3_progress_v1";
+
+    const boardEl = document.getElementById("board");
+    const missionTypeEl = document.getElementById("missionType");
+    const missionMainEl = document.getElementById("missionMain");
+    const missionSubEl = document.getElementById("missionSub");
+    const messageEl = document.getElementById("message");
+    const unitRowEl = document.getElementById("unitRow");
+    const diffSel = document.getElementById("diffSel");
+    const startBtn = document.getElementById("startBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const weakListEl = document.getElementById("weakList");
+    const hudEl = document.getElementById("hud");
+
+    const state = {
+      rows: 8,
+      cols: 8,
+      board: [],
+      selected: null,
+      units: new Set([1]),
+      difficulty: "normal",
+      running: false,
+      lock: false,
+      score: 0,
+      combo: 0,
+      movesLeft: 0,
+      missionQueue: [],
+      missionIdx: 0,
+      missionHit: 0,
+      drift: 0,
+      conceptPool: [],
+      progress: loadProgress()
+    };
+
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (raw) {
+          const p = JSON.parse(raw);
+          if (p && p.wordStats) return p;
+        }
+      } catch (_) {}
+      return {
+        xp: 0,
+        bestScore: 0,
+        totalSessions: 0,
+        totalClear: 0,
+        totalMiss: 0,
+        wordStats: {}
+      };
+    }
+
+    function saveProgress() {
+      localStorage.setItem(STORE_KEY, JSON.stringify(state.progress));
+    }
+
+    function statOf(id) {
+      const bag = state.progress.wordStats;
+      if (!bag[id]) bag[id] = { clear: 0, miss: 0, box: 1, due: 0 };
+      return bag[id];
+    }
+
+    function nextDue(box) {
+      const mins = [0, 3, 12, 60, 360, 1440];
+      return Date.now() + mins[Math.max(1, Math.min(5, box))] * 60000;
+    }
+
+    function dueWeight(word) {
+      const st = statOf(word.id);
+      const now = Date.now();
+      const dueBonus = st.due <= now ? 2.5 : 0;
+      const weak = st.miss * 2.1 - st.clear * 0.45;
+      return Math.max(0.35, 1 + dueBonus + weak + (st.box <= 2 ? 3 : 0));
+    }
+
+    function weightedPick(pool, n) {
+      const src = pool.slice();
+      const out = [];
+      while (src.length && out.length < n) {
+        const total = src.reduce((s, w) => s + dueWeight(w), 0);
+        let hit = Math.random() * total;
+        let idx = 0;
+        for (; idx < src.length; idx += 1) {
+          hit -= dueWeight(src[idx]);
+          if (hit <= 0) break;
+        }
+        out.push(src.splice(Math.min(idx, src.length - 1), 1)[0]);
+      }
+      return out;
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function unitPool() {
+      return WORDS.filter((w) => state.units.has(w.unit));
+    }
+
+    function levelOf(xp) {
+      return Math.floor(xp / 240) + 1;
+    }
+
+    function tileLabel(word) {
+      return Math.random() < 0.56 ? word.en : word.zh;
+    }
+
+    function randomConcept() {
+      return state.conceptPool[Math.floor(Math.random() * state.conceptPool.length)];
+    }
+
+    function createTile(word) {
+      return {
+        id: word.id,
+        word,
+        label: tileLabel(word),
+        matched: false
+      };
+    }
+
+    function createBoard() {
+      const board = Array.from({ length: state.rows }, () => Array(state.cols).fill(null));
+      for (let r = 0; r < state.rows; r += 1) {
+        for (let c = 0; c < state.cols; c += 1) {
+          let tile;
+          let guard = 0;
+          do {
+            tile = createTile(randomConcept());
+            guard += 1;
+            if (guard > 25) break;
+          } while (
+            (c >= 2 && board[r][c - 1].id === tile.id && board[r][c - 2].id === tile.id) ||
+            (r >= 2 && board[r - 1][c].id === tile.id && board[r - 2][c].id === tile.id)
+          );
+          board[r][c] = tile;
+        }
+      }
+      state.board = board;
+      if (!hasPossibleMove()) {
+        shuffleBoard(true);
+      }
+    }
+
+    function renderHud() {
+      const pool = unitPool();
+      const due = pool.filter((w) => statOf(w.id).due <= Date.now()).length;
+      const lv = levelOf(state.progress.xp);
+      const metrics = [
+        ["得分", state.score],
+        ["连击", `x${state.combo}`],
+        ["剩余步数", state.movesLeft],
+        ["任务进度", `${state.missionHit}/${state.missionQueue.length}`],
+        ["等级", `Lv.${lv}`],
+        ["总 XP", state.progress.xp],
+        ["最佳分", state.progress.bestScore],
+        ["待复习", `${due}/${pool.length}`]
+      ];
+      hudEl.innerHTML = metrics.map(([k, v]) => `<div class="metric"><span>${k}</span><strong>${v}</strong></div>`).join("");
+    }
+
+    function renderWeakList() {
+      const list = unitPool()
+        .map((w) => {
+          const st = statOf(w.id);
+          const risk = st.miss * 2 - st.clear + (st.box <= 2 ? 3 : 0);
+          return { w, st, risk };
+        })
+        .sort((a, b) => b.risk - a.risk)
+        .slice(0, 12);
+
+      weakListEl.innerHTML = list.map(({ w, st }) => {
+        const total = st.clear + st.miss;
+        const rate = total ? `${Math.round((st.clear / total) * 100)}%` : "--";
+        return `<div class="item">${w.en}<small>${w.zh} · 记忆盒 ${st.box} · 成功率 ${rate}</small></div>`;
+      }).join("");
+    }
+
+    function setMessage(msg, type = "") {
+      messageEl.textContent = msg;
+      messageEl.className = `msg ${type}`;
+    }
+
+    function currentMission() {
+      return state.missionQueue[state.missionIdx] || null;
+    }
+
+    function updateMissionText() {
+      const m = currentMission();
+      if (!state.running) {
+        missionTypeEl.textContent = "MISSION";
+        missionMainEl.textContent = "点击“开始对局”";
+        missionSubEl.textContent = "目标词会有额外奖励；偏离目标会降低任务评分。";
+        return;
+      }
+      missionTypeEl.textContent = "TARGET WORD";
+      missionMainEl.textContent = m ? m.zh : "任务完成";
+      missionSubEl.textContent = m
+        ? `命中对应词块：${m.en} · 任务 ${state.missionIdx + 1}/${state.missionQueue.length}`
+        : "全部任务完成，继续冲高分。";
+    }
+
+    function renderBoard() {
+      boardEl.innerHTML = "";
+      const m = currentMission();
+      for (let r = 0; r < state.rows; r += 1) {
+        for (let c = 0; c < state.cols; c += 1) {
+          const tile = state.board[r][c];
+          const btn = document.createElement("button");
+          btn.className = "tile";
+          btn.textContent = tile.label;
+          btn.dataset.r = r;
+          btn.dataset.c = c;
+          if (state.selected && state.selected.r === r && state.selected.c === c) {
+            btn.classList.add("selected");
+          }
+          if (m && tile.id === m.id) btn.classList.add("target-glow");
+          btn.addEventListener("click", onTileClick);
+          boardEl.appendChild(btn);
+        }
+      }
+    }
+
+    function swap(a, b) {
+      const t = state.board[a.r][a.c];
+      state.board[a.r][a.c] = state.board[b.r][b.c];
+      state.board[b.r][b.c] = t;
+    }
+
+    function isAdjacent(a, b) {
+      return Math.abs(a.r - b.r) + Math.abs(a.c - b.c) === 1;
+    }
+
+    function findMatches() {
+      const matched = new Set();
+
+      for (let r = 0; r < state.rows; r += 1) {
+        let run = 1;
+        for (let c = 1; c <= state.cols; c += 1) {
+          const same = c < state.cols && state.board[r][c].id === state.board[r][c - 1].id;
+          if (same) run += 1;
+          else {
+            if (run >= 3) {
+              for (let k = 0; k < run; k += 1) matched.add(`${r},${c - 1 - k}`);
+            }
+            run = 1;
+          }
+        }
+      }
+
+      for (let c = 0; c < state.cols; c += 1) {
+        let run = 1;
+        for (let r = 1; r <= state.rows; r += 1) {
+          const same = r < state.rows && state.board[r][c].id === state.board[r - 1][c].id;
+          if (same) run += 1;
+          else {
+            if (run >= 3) {
+              for (let k = 0; k < run; k += 1) matched.add(`${r - 1 - k},${c}`);
+            }
+            run = 1;
+          }
+        }
+      }
+
+      return [...matched].map((p) => {
+        const [r, c] = p.split(",").map(Number);
+        return { r, c };
+      });
+    }
+
+    function hasPossibleMove() {
+      for (let r = 0; r < state.rows; r += 1) {
+        for (let c = 0; c < state.cols; c += 1) {
+          const pos = { r, c };
+          const neighbors = [
+            { r: r + 1, c },
+            { r, c: c + 1 }
+          ].filter((p) => p.r < state.rows && p.c < state.cols);
+
+          for (const nb of neighbors) {
+            swap(pos, nb);
+            const ok = findMatches().length > 0;
+            swap(pos, nb);
+            if (ok) return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    function markMatched(cells) {
+      cells.forEach(({ r, c }) => {
+        const idx = r * state.cols + c;
+        const el = boardEl.children[idx];
+        if (el) el.classList.add("match");
+      });
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function collapseAndRefill() {
+      for (let c = 0; c < state.cols; c += 1) {
+        let write = state.rows - 1;
+        for (let r = state.rows - 1; r >= 0; r -= 1) {
+          if (state.board[r][c]) {
+            state.board[write][c] = state.board[r][c];
+            if (write !== r) state.board[r][c] = null;
+            write -= 1;
+          }
+        }
+        while (write >= 0) {
+          state.board[write][c] = createTile(randomConcept());
+          write -= 1;
+        }
+      }
+    }
+
+    function recordClear(word) {
+      const st = statOf(word.id);
+      st.clear += 1;
+      st.box = Math.min(5, st.box + 1);
+      st.due = nextDue(st.box);
+      state.progress.totalClear += 1;
+    }
+
+    function recordMiss(word) {
+      const st = statOf(word.id);
+      st.miss += 1;
+      st.box = Math.max(1, st.box - 1);
+      st.due = Date.now() + 120000;
+      state.progress.totalMiss += 1;
+    }
+
+    async function processMatches(firstMove) {
+      let cascade = 0;
+      let allMatchedCount = 0;
+      let missionDoneThisMove = false;
+      const mission = currentMission();
+
+      while (true) {
+        const matched = findMatches();
+        if (!matched.length) break;
+        cascade += 1;
+        allMatchedCount += matched.length;
+
+        const matchedWords = new Map();
+        matched.forEach(({ r, c }) => {
+          const tile = state.board[r][c];
+          matchedWords.set(tile.id, tile.word);
+        });
+
+        markMatched(matched);
+        await sleep(220);
+
+        matched.forEach(({ r, c }) => {
+          state.board[r][c] = null;
+        });
+
+        collapseAndRefill();
+        renderBoard();
+
+        matchedWords.forEach((w) => recordClear(w));
+
+        if (mission && matchedWords.has(mission.id)) {
+          missionDoneThisMove = true;
+        }
+
+        const base = matched.length * 8;
+        const comboBonus = Math.max(0, (state.combo + cascade - 1) * 4);
+        const total = Math.round((base + comboBonus) * CONFIG[state.difficulty].scoreMul);
+        state.score += total;
+        state.progress.xp += Math.max(1, Math.floor(total * 0.35));
+      }
+
+      if (allMatchedCount === 0) return false;
+
+      state.movesLeft -= firstMove ? 1 : 0;
+
+      if (mission) {
+        if (missionDoneThisMove) {
+          state.combo += 1;
+          state.score += 32 + state.combo * 5;
+          state.progress.xp += 14 + state.combo;
+          state.missionHit += 1;
+          state.missionIdx += 1;
+          setMessage(`命中任务词：${mission.en} · 连击 x${state.combo}`, "good");
+        } else if (firstMove) {
+          state.combo = 0;
+          recordMiss(mission);
+          state.progress.xp += 2;
+          setMessage(`偏离任务：当前目标是 ${mission.en}`, "bad");
+        }
+      }
+
+      saveProgress();
+      renderHud();
+      renderWeakList();
+      updateMissionText();
+
+      if (state.missionIdx >= state.missionQueue.length) {
+        finishRound(true);
+      } else if (state.movesLeft <= 0) {
+        finishRound(false);
+      } else if (!hasPossibleMove()) {
+        shuffleBoard(false);
+        setMessage("已自动洗牌（无可用交换）", "");
+      }
+
+      return true;
+    }
+
+    async function onTileClick(e) {
+      if (!state.running || state.lock) return;
+      const r = Number(e.currentTarget.dataset.r);
+      const c = Number(e.currentTarget.dataset.c);
+      const pos = { r, c };
+
+      if (!state.selected) {
+        state.selected = pos;
+        renderBoard();
+        return;
+      }
+
+      if (state.selected.r === r && state.selected.c === c) {
+        state.selected = null;
+        renderBoard();
+        return;
+      }
+
+      if (!isAdjacent(state.selected, pos)) {
+        state.selected = pos;
+        renderBoard();
+        return;
+      }
+
+      state.lock = true;
+      swap(state.selected, pos);
+      renderBoard();
+
+      const has = findMatches().length > 0;
+      if (!has) {
+        await sleep(160);
+        swap(state.selected, pos);
+        setMessage("无效交换：不会形成消除", "bad");
+        state.selected = null;
+        state.lock = false;
+        renderBoard();
+        return;
+      }
+
+      state.selected = null;
+      await processMatches(true);
+      state.lock = false;
+      renderBoard();
+    }
+
+    function shuffleBoard(manual = true) {
+      if (!state.conceptPool.length) return;
+      for (let i = 0; i < state.rows; i += 1) {
+        for (let j = 0; j < state.cols; j += 1) {
+          state.board[i][j] = createTile(randomConcept());
+        }
+      }
+
+      let guard = 0;
+      while (findMatches().length || !hasPossibleMove()) {
+        guard += 1;
+        if (guard > 40) break;
+        for (let r = 0; r < state.rows; r += 1) {
+          for (let c = 0; c < state.cols; c += 1) {
+            state.board[r][c] = createTile(randomConcept());
+          }
+        }
+      }
+
+      renderBoard();
+      if (manual) {
+        state.movesLeft = Math.max(0, state.movesLeft - 1);
+        state.combo = 0;
+        renderHud();
+        setMessage("手动洗牌：消耗 1 步", "");
+      }
+    }
+
+    function startRound() {
+      const pool = unitPool();
+      const cfg = CONFIG[state.difficulty];
+      if (pool.length < 14) {
+        setMessage("词库太小，请至少选择 1 个完整单元。", "bad");
+        return;
+      }
+
+      state.running = true;
+      state.lock = false;
+      state.score = 0;
+      state.combo = 0;
+      state.movesLeft = cfg.moves;
+      state.missionHit = 0;
+      state.missionIdx = 0;
+
+      state.conceptPool = weightedPick(pool, Math.min(cfg.poolConcepts, pool.length));
+      if (state.conceptPool.length < 8) {
+        state.conceptPool = shuffle(pool.slice()).slice(0, Math.min(10, pool.length));
+      }
+
+      const missionBase = weightedPick(pool, Math.min(cfg.missionCount, pool.length));
+      state.missionQueue = missionBase;
+
+      state.progress.totalSessions += 1;
+      saveProgress();
+
+      createBoard();
+      renderBoard();
+      renderHud();
+      renderWeakList();
+      updateMissionText();
+      setMessage("对局开始，优先消除任务词。", "good");
+    }
+
+    function finishRound(clear) {
+      state.running = false;
+      state.lock = false;
+      state.progress.bestScore = Math.max(state.progress.bestScore, state.score);
+      saveProgress();
+      renderHud();
+      renderWeakList();
+
+      if (clear) {
+        missionTypeEl.textContent = "MISSION CLEAR";
+        missionMainEl.textContent = `通关成功！总分 ${state.score}`;
+        missionSubEl.textContent = `命中任务 ${state.missionHit}/${state.missionQueue.length} · 剩余步数 ${state.movesLeft}`;
+        setMessage("本轮完成，可切换更高难度。", "good");
+      } else {
+        missionTypeEl.textContent = "MISSION END";
+        missionMainEl.textContent = `步数耗尽，得分 ${state.score}`;
+        missionSubEl.textContent = `任务完成 ${state.missionHit}/${state.missionQueue.length}`;
+        setMessage("本轮结束，建议继续复习错词。", "bad");
+      }
+    }
+
+    function renderUnitChips() {
+      const units = [1, 2, 3, 4, 5, 6];
+      unitRowEl.innerHTML = units.map((u) => `<button class="unit-chip ${state.units.has(u) ? "active" : ""}" data-u="${u}">Unit ${u}</button>`).join("");
+      unitRowEl.querySelectorAll(".unit-chip").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const u = Number(btn.dataset.u);
+          if (state.units.has(u) && state.units.size > 1) state.units.delete(u);
+          else state.units.add(u);
+          renderUnitChips();
+          renderHud();
+          renderWeakList();
+          if (!state.running) {
+            missionTypeEl.textContent = "MISSION";
+            missionMainEl.textContent = "点击“开始对局”";
+            missionSubEl.textContent = `当前单元：${[...state.units].sort((a, b) => a - b).join(", ")}`;
+          }
+        });
+      });
+    }
+
+    function bindActions() {
+      diffSel.addEventListener("change", () => {
+        state.difficulty = diffSel.value;
+        const t = diffSel.options[diffSel.selectedIndex].text;
+        document.getElementById("hint").textContent = `当前${t}：点击两个相邻格子交换；形成 3 连及以上即可消除。`;
+      });
+
+      startBtn.addEventListener("click", startRound);
+
+      shuffleBtn.addEventListener("click", () => {
+        if (!state.running || state.lock) {
+          setMessage("请先开始对局。", "bad");
+          return;
+        }
+        if (state.movesLeft <= 0) return;
+        state.combo = 0;
+        shuffleBoard(true);
+      });
+
+      resetBtn.addEventListener("click", () => {
+        if (!confirm("确认清空本地学习进度吗？")) return;
+        localStorage.removeItem(STORE_KEY);
+        state.progress = loadProgress();
+        state.running = false;
+        state.selected = null;
+        state.board = [];
+        boardEl.innerHTML = "";
+        renderHud();
+        renderWeakList();
+        missionTypeEl.textContent = "MISSION";
+        missionMainEl.textContent = "点击“开始对局”";
+        missionSubEl.textContent = "目标词会有额外奖励；偏离目标会降低任务评分。";
+        setMessage("进度已重置", "");
+      });
+    }
+
+    function init() {
+      renderUnitChips();
+      renderHud();
+      renderWeakList();
+      bindActions();
+      setMessage("准备就绪", "");
+    }
+
+    init();
+  </script>
+</body>
+</html>
