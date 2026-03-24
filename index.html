@@ -32,10 +32,12 @@
         linear-gradient(30deg, transparent 87.10%, rgba(255, 255, 255, 0.28) 87.18%, rgba(255, 255, 255, 0.28) 87.24%, transparent 87.32%);
     }
     .wrap {
+      box-sizing: border-box;
       position: relative;
       z-index: 1;
       width: min(92vw, 980px);
-      min-height: 100vh;
+      height: 100%;
+      min-height: 100svh;
       margin: 0 auto;
       padding: 20px 20px calc(36px + env(safe-area-inset-bottom));
       display: flex;
