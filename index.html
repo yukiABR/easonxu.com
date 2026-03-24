@@ -18,8 +18,6 @@
     body {
       position: relative;
       overflow: hidden;
-      display: grid;
-      place-items: center;
       background: linear-gradient(rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0.32)), url("./SEAS.jpg") center/cover no-repeat fixed;
     }
     body::before {
@@ -36,37 +34,21 @@
     .wrap {
       position: relative;
       z-index: 1;
-      text-align: center;
-      padding: 20px;
       width: min(92vw, 980px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 20px 20px calc(36px + env(safe-area-inset-bottom));
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-end;
     }
     .links {
       display: flex;
       gap: 10px;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 28px;
-    }
-    .quote {
-      margin: 0;
-      font-size: clamp(26px, 4.4vw, 56px);
-      line-height: 1.45;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      text-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
-    }
-    .quote-en {
-      margin: 4px 0 0;
-      font-size: clamp(16px, 2.2vw, 30px);
-      line-height: 1.4;
-      font-weight: 500;
-      letter-spacing: 0.03em;
-      font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
-      color: rgba(255, 255, 255, 0.94);
-      text-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      width: 100%;
     }
     a {
       display: inline-block;
@@ -86,8 +68,6 @@
 </head>
 <body>
   <div class="wrap">
-    <p class="quote">达人撒手悬崖，志士俯首尘埃。</p>
-    <p class="quote-en">Wisdom in retreat, strength in humility.</p>
     <div class="links">
       <a href="./chem-valence-drill.html">进入化合价训练</a>
       <a href="./chem-valence-game.html">进入化合价闯关</a>
